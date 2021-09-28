@@ -1,7 +1,7 @@
 # Личный проект «Шесть городов»
 
-* Студент: [Viktor Ivanov](https://up.htmlacademy.ru/react/8/user/1254935).
-* Наставник: `Неизвестно`.
+* Студент: [Viktor Ivanov](https://htmlacademy.ru/profile/id1254935).
+* Наставник: [Елена Грицук](https://htmlacademy.ru/profile/id199079).
 
 ---
 
