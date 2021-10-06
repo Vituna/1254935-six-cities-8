@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/app/app';
 
-const offersNumber = 10;
+import { offersNumber } from './const';
 
 ReactDOM.render(
   <React.StrictMode>
