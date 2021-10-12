@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/app/app';
 
-import { offersNumber } from './const';
+import {mockOffers} from './mocks/offers';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App offersNumber={offersNumber} />
+    <App offers={mockOffers} />
   </React.StrictMode>,
   document.getElementById('root'));

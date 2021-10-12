@@ -4,4 +4,11 @@ export enum AuthorizationStatus {
   Unknown = 'UNKNOWN',
 }
 
-export const offersNumber = 10;
+export const CitiesName = [
+  'Paris',
+  'Cologne',
+  'Brussels',
+  'Amsterdam',
+  'Hamburg',
+  'Dusseldorf',
+];
