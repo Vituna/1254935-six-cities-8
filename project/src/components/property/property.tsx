@@ -6,6 +6,8 @@ import ReviewList from '../review-list/review-list';
 import {mockOffers} from '../../mocks/offers';
 import {mockReviews} from '../../mocks/reviews';
 
+import {page} from '../../const';
+
 type PropertyProps = {
   authorizationStatus: string;
 }
@@ -17,7 +19,7 @@ type UseParamTypes = {
 function Property(props: PropertyProps): JSX.Element {
   const {authorizationStatus} = props;
   const params = useParams<UseParamTypes>();
-  const items = mockOffers[+params.id - 1];
+  const item = mockOffers[+params.id - 1];
   const {
     bedrooms,
     description,
@@ -31,7 +33,7 @@ function Property(props: PropertyProps): JSX.Element {
     rating,
     title,
     type,
-  } = items;
+  } = item;
 
   return (
     <div className="page">
@@ -94,14 +96,13 @@ function Property(props: PropertyProps): JSX.Element {
               <div className="property__inside">
                 <h2 className="property__inside-title">What&apos;s inside</h2>
                 <ul className="property__inside-list">
-                  {goods.map((good, index) => {
-                    const key = `${good}_${index}`;
-                    return (
-                      <li className="property__inside-item" key={key}>
+                  {goods.map((good, i) =>
+                    (
+                      <li className="property__inside-item" key={`${good + i}`}>
                         {good}
                       </li>
-                    );
-                  })}
+                    ),
+                  )}
                 </ul>
               </div>
               <div className="property__host">
@@ -135,7 +136,7 @@ function Property(props: PropertyProps): JSX.Element {
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
             <div className="near-places__list places__list">
               {mockOffers.slice(0, 3).map((offer) => (
-                <OfferCard {...offer} key={offer.id} cardType="near" />
+                <OfferCard {...offer} key={offer.id} cardType={page.Near} />
               ))}
             </div>
           </section>

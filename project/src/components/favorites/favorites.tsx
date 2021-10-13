@@ -3,6 +3,7 @@ import Logo from '../logo/logo';
 import OfferCard from '../offer-card/offer-card';
 import {Offers} from '../../types/offer';
 
+import {page} from '../../const';
 
 type FavoritesProps = {
   offers: Offers[];
@@ -33,7 +34,7 @@ function Favorites(props: FavoritesProps): JSX.Element {
                 </div>
                 <div className="favorites__places">
                   {offers.map((offer) => (
-                    <OfferCard {...offer} key={offer.id}  cardType="favorites"/>
+                    <OfferCard {...offer} key={offer.id}  cardType={page.Favorites}/>
                   ))}
                 </div>
               </li>

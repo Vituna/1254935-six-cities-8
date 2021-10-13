@@ -4,16 +4,16 @@ function ReviewForm(): JSX.Element {
   const [reviewValue, setReviewValue] = React.useState('');
   const [rating, setRating] = React.useState(0);
 
-  const handleSubmitForm = (a: React.FormEvent<HTMLFormElement>): void => {
-    a.preventDefault();
+  const handleSubmitForm = (evt: React.FormEvent<HTMLFormElement>): void => {
+    evt.preventDefault();
   };
 
-  const handleChangeText = (a: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    setReviewValue(a.target.value);
+  const handleChangeText = (evt: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    setReviewValue(evt.target.value);
   };
 
-  const handleChangeRating = (a: React.ChangeEvent<HTMLInputElement>): void => {
-    setRating(+a.target.value);
+  const handleChangeRating = (evt: React.ChangeEvent<HTMLInputElement>): void => {
+    setRating(+evt.target.value);
   };
 
   const isFormValid = reviewValue.length > 60 && Boolean(rating);

@@ -9,10 +9,10 @@ function LocationsItem(props: LocationsItemProps): JSX.Element {
     <div className="tabs">
       <section className="locations container">
         <ul className="locations__list tabs__list">
-          {cities.map((citie, i) => (
-            <li className="locations__item" key={`${citie + i}`}>
+          {cities.map((city, i) => (
+            <li className="locations__item" key={`${city + i}`}>
               <a className="locations__item-link tabs__item" href="#!">
-                <span>{citie}</span>
+                <span>{city}</span>
               </a>
             </li>
           ))}
