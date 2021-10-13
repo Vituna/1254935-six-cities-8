@@ -1,6 +1,7 @@
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
 
-import {AuthorizationStatus} from '../../const';
+import {AuthorizationStatus, cities} from '../../const';
+import {Offers} from '../../types/offer';
 
 import Main from '../main/main';
 import SignIn from '../sign-in/sign-in';
@@ -10,15 +11,15 @@ import NoFound from '../no-found/no-found';
 import PrivateRoute from '../private-route/private-route';
 
 type AppProps = {
-  offersNumber: number;
+  offers: Offers[]
 }
 
-function App({offersNumber}: AppProps): JSX.Element {
+function App({offers}: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Switch>
         <Route exact path={'/'}>
-          <Main offersNumber={offersNumber} />
+          <Main offers={offers} cities={cities} authorizationStatus={AuthorizationStatus.Auth} />
         </Route>
         <Route exact path={'/login'}>
           <SignIn />
@@ -26,12 +27,12 @@ function App({offersNumber}: AppProps): JSX.Element {
         <PrivateRoute
           exact
           path={'/favorites'}
-          render={() => <Favorites />}
+          render={() => <Favorites offers={offers} authorizationStatus={AuthorizationStatus.Auth} />}
           authorizationStatus={AuthorizationStatus.NoAuth}
         >
         </PrivateRoute>
         <Route exact path={'/offer/:id'}>
-          <Property />
+          <Property authorizationStatus={AuthorizationStatus.Auth} />
         </Route>
         <Route>
           <NoFound />

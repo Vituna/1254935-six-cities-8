@@ -1,7 +1,14 @@
 import Logo from '../logo/logo';
 import User from '../user/user';
 
-function Header(): JSX.Element {
+type HeaderProps = {
+  authorizationStatus: string;
+}
+
+function Header(props: HeaderProps): JSX.Element {
+
+  const {authorizationStatus} = props;
+
 
   return (
     <header className="header">
@@ -13,7 +20,7 @@ function Header(): JSX.Element {
 
           </div>
 
-          <User />
+          <User authorizationStatus={authorizationStatus}/>
 
         </div>
       </div>
