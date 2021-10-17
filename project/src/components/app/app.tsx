@@ -1,6 +1,6 @@
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
 
-import {AuthorizationStatus, cities} from '../../const';
+import {AuthorizationStatus, cities, PlacesSort} from '../../const';
 import {Offers} from '../../types/offer';
 
 import Main from '../main/main';
@@ -19,7 +19,7 @@ function App({offers}: AppProps): JSX.Element {
     <BrowserRouter>
       <Switch>
         <Route exact path={'/'}>
-          <Main offers={offers} cities={cities} authorizationStatus={AuthorizationStatus.Auth} />
+          <Main offers={offers} cities={cities} PlacesSort={PlacesSort} authorizationStatus={AuthorizationStatus.Auth} />
         </Route>
         <Route exact path={'/login'}>
           <SignIn />

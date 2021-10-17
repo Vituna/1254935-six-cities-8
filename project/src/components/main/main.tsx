@@ -1,18 +1,21 @@
 import Header from '../header/header';
 import LocationsItem from '../locations-item/locations-item';
+import Sort from '../sort/sort';
 import CardsList from '../cards-list/cards-list';
+import Map from '../map/map';
 
 import {Offers} from '../../types/offer';
 
 type MainScreenProps = {
   offers: Offers[];
   cities: string[];
+  PlacesSort: string[];
   authorizationStatus: string;
 }
 
 function Main(props: MainScreenProps): JSX.Element {
 
-  const {offers, cities, authorizationStatus} = props;
+  const {offers, cities, PlacesSort: placesOtion, authorizationStatus} = props;
 
   return(
     <div className="page page--gray page--main">
@@ -29,27 +32,18 @@ function Main(props: MainScreenProps): JSX.Element {
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
               <b className="places__found">{offers.length} places to stay in Amsterdam</b>
-              <form className="places__sorting" action="#" method="get">
-                <span className="places__sorting-caption">Sort by</span>
-                <span className="places__sorting-type" tabIndex={0}>
-                  Popular
-                  <svg className="places__sorting-arrow" width="7" height="4">
-                    <use xlinkHref="#icon-arrow-select"></use>
-                  </svg>
-                </span>
-                <ul className="places__options places__options--custom places__options--opened">
-                  <li className="places__option places__option--active" tabIndex={0}>Popular</li>
-                  <li className="places__option" tabIndex={0}>Price: low to high</li>
-                  <li className="places__option" tabIndex={0}>Price: high to low</li>
-                  <li className="places__option" tabIndex={0}>Top rated first</li>
-                </ul>
-              </form>
+
+              <Sort PlacesSort={placesOtion}/>
 
               <CardsList offers={offers} />
 
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              <section className="cities__map map">
+
+                <Map offers={offers}/>
+
+              </section>
             </div>
           </div>
         </div>

@@ -60,3 +60,9 @@ export type OfferReview = {
   user: ReviewUser;
 }
 
+export type Citylocation = {
+    latitude: number,
+    longitude: number,
+    zoom: number,
+}
+
