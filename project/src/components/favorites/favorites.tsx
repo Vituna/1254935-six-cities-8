@@ -8,11 +8,11 @@ import {page} from '../../const';
 type FavoritesProps = {
   offers: Offers[];
   authorizationStatus: string;
+  onListItemHover: (listItemName: string) => void;
 }
 
 function Favorites(props: FavoritesProps): JSX.Element {
-  const {offers, authorizationStatus} = props;
-
+  const {offers, authorizationStatus, onListItemHover} = props;
 
   return (
     <div className="page">
@@ -34,7 +34,7 @@ function Favorites(props: FavoritesProps): JSX.Element {
                 </div>
                 <div className="favorites__places">
                   {offers.map((offer) => (
-                    <OfferCard {...offer} key={offer.id}  cardType={page.Favorites}/>
+                    <OfferCard {...offer} key={offer.id}  cardType={page.Favorites} onListItemHover={onListItemHover}/>
                   ))}
                 </div>
               </li>

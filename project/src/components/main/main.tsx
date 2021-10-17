@@ -4,18 +4,21 @@ import Sort from '../sort/sort';
 import CardsList from '../cards-list/cards-list';
 import Map from '../map/map';
 
+import {MapSize} from '../../const';
 import {Offers} from '../../types/offer';
 
 type MainScreenProps = {
   offers: Offers[];
   cities: string[];
-  PlacesSort: string[];
+  placesSort: string[];
   authorizationStatus: string;
+  onListItemHover: (listItemName: string) => void;
+  focusedCard?: Offers | undefined;
 }
 
 function Main(props: MainScreenProps): JSX.Element {
 
-  const {offers, cities, PlacesSort: placesOtion, authorizationStatus} = props;
+  const {offers, cities, placesSort, authorizationStatus, focusedCard, onListItemHover} = props;
 
   return(
     <div className="page page--gray page--main">
@@ -33,15 +36,15 @@ function Main(props: MainScreenProps): JSX.Element {
               <h2 className="visually-hidden">Places</h2>
               <b className="places__found">{offers.length} places to stay in Amsterdam</b>
 
-              <Sort PlacesSort={placesOtion}/>
+              <Sort placesSort={placesSort}/>
 
-              <CardsList offers={offers} />
+              <CardsList offers={offers} onListItemHover={onListItemHover}/>
 
             </section>
             <div className="cities__right-section">
               <section className="cities__map map">
 
-                <Map offers={offers}/>
+                <Map offers={offers} mapSize={MapSize.MapHeighthOffer} focusedCard={focusedCard}/>
 
               </section>
             </div>

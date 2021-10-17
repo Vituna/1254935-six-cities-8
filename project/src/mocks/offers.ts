@@ -31,7 +31,7 @@ export const mockOffers = [
     previewImage: 'img/apartment-01.jpg',
     price: 10,
     rating: 2,
-    title: 'Beautiful & luxurious studio at great location',
+    title: 'Beautiful & luxurious studio at great ',
     type: 'apartment',
   },
 
@@ -66,7 +66,7 @@ export const mockOffers = [
     previewImage: 'img/apartment-02.jpg',
     price: 1200,
     rating: 4.8,
-    title: 'Beautiful & luxurious studio at great location',
+    title: 'Beautiful luxurious studio at great location',
     type: 'apartment',
   },
 
@@ -101,7 +101,7 @@ export const mockOffers = [
     previewImage: 'img/apartment-03.jpg',
     price: 1800,
     rating: 4,
-    title: 'Beautiful & luxurious studio at great location',
+    title: 'Beautiful & studio at great location',
     type: 'apartment',
   },
 
@@ -136,7 +136,7 @@ export const mockOffers = [
     previewImage: 'img/room.jpg',
     price: 200000,
     rating: 1,
-    title: 'Beautiful & luxurious studio at great location',
+    title: 'Beautiful & luxurious studio great location',
     type: 'GOOD',
   },
 ];

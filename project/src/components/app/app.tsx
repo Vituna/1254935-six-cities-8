@@ -1,4 +1,5 @@
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
+import {useState} from 'react';
 
 import {AuthorizationStatus, cities, PlacesSort} from '../../const';
 import {Offers} from '../../types/offer';
@@ -15,11 +16,20 @@ type AppProps = {
 }
 
 function App({offers}: AppProps): JSX.Element {
+
+  const [focusedCard, setFocusedCard] = useState<Offers | undefined>(undefined);
+
+  const onListItemHover = (listItemName: string) => {
+    const currentPoint = offers.find((offer) => offer.title === listItemName);
+    setFocusedCard(currentPoint);
+  };
+
+
   return (
     <BrowserRouter>
       <Switch>
         <Route exact path={'/'}>
-          <Main offers={offers} cities={cities} PlacesSort={PlacesSort} authorizationStatus={AuthorizationStatus.Auth} />
+          <Main offers={offers} cities={cities} placesSort={PlacesSort} authorizationStatus={AuthorizationStatus.Auth} focusedCard={focusedCard} onListItemHover={onListItemHover}/>
         </Route>
         <Route exact path={'/login'}>
           <SignIn />
@@ -27,12 +37,12 @@ function App({offers}: AppProps): JSX.Element {
         <PrivateRoute
           exact
           path={'/favorites'}
-          render={() => <Favorites offers={offers} authorizationStatus={AuthorizationStatus.Auth} />}
+          render={() => <Favorites offers={offers} authorizationStatus={AuthorizationStatus.Auth} onListItemHover={onListItemHover} />}
           authorizationStatus={AuthorizationStatus.NoAuth}
         >
         </PrivateRoute>
         <Route exact path={'/offer/:id'}>
-          <Property authorizationStatus={AuthorizationStatus.Auth} />
+          <Property offers={offers} authorizationStatus={AuthorizationStatus.Auth} focusedCard={focusedCard} onListItemHover={onListItemHover}/>
         </Route>
         <Route>
           <NoFound />

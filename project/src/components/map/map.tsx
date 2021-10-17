@@ -1,47 +1,57 @@
 import {useRef, useEffect} from 'react';
-import leaflet from 'leaflet';
+import {Icon, Marker} from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import useMap from '../../hooks/use-map/use-map';
 import {Offers} from '../../types/offer';
 
-import {URL_MARKER_DEFAULT} from '../../const';
+import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
 
 type MapProps = {
-  offers: Offers[]
+  offers: Offers[];
+  mapSize: string;
+  focusedCard?: Offers | undefined;
 }
+
+const defaultCustomIcon = new Icon({
+  iconUrl: URL_MARKER_DEFAULT,
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+});
+
+const currentCustomIcon = new Icon({
+  iconUrl: URL_MARKER_CURRENT,
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+});
 
 function Map(props: MapProps): JSX.Element {
 
-  const {offers} = props;
+  const {offers, mapSize, focusedCard} = props;
   const city = offers[0];
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
-  const defaultCustomIcon = leaflet.icon({
-    iconUrl: URL_MARKER_DEFAULT,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-  });
-
   useEffect(() => {
     if (map) {
       offers.forEach((offer) => {
-        leaflet
-          .marker({
-            lat: offer.location.latitude,
-            lng: offer.location.longitude,
-          }, {
-            icon: defaultCustomIcon,
-          })
-          .addTo(map);
+        const marker = new Marker({
+          lat: offer.location.latitude,
+          lng: offer.location.longitude,
+        });
+        marker
+          .setIcon(
+            focusedCard !== undefined && offer.title === focusedCard.title
+              ? currentCustomIcon
+              : defaultCustomIcon,
+          ).addTo(map);
       });
     }
-  }, [defaultCustomIcon, map, offers]);
+  }, [map, offers, focusedCard]);
 
   return (
     <div
-      style={{ height: '850px' }}
+      style={{ height: mapSize}}
       ref={mapRef}
     >
     </div>);

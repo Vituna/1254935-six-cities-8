@@ -1,15 +1,21 @@
 import {useParams} from 'react-router-dom';
+import {useState} from 'react';
 
 import Header from '../header/header';
 import OfferCard from '../offer-card/offer-card';
 import ReviewList from '../review-list/review-list';
-import {mockOffers} from '../../mocks/offers';
 import {mockReviews} from '../../mocks/reviews';
+import Map from '../map/map';
 
-import {page} from '../../const';
+import {page, MapSize} from '../../const';
+import {Offers} from '../../types/offer';
+
 
 type PropertyProps = {
   authorizationStatus: string;
+  offers: Offers[];
+  focusedCard?: Offers | undefined;
+  onListItemHover: (listItemName: string) => void;
 }
 
 type UseParamTypes = {
@@ -17,9 +23,9 @@ type UseParamTypes = {
 }
 
 function Property(props: PropertyProps): JSX.Element {
-  const {authorizationStatus} = props;
+  const {offers, authorizationStatus, focusedCard, onListItemHover} = props;
   const params = useParams<UseParamTypes>();
-  const item = mockOffers[+params.id - 1];
+  const item = offers[+params.id - 1];
   const {
     bedrooms,
     description,
@@ -34,6 +40,14 @@ function Property(props: PropertyProps): JSX.Element {
     title,
     type,
   } = item;
+
+  const [isActivFavorite, setActivFavorite] = useState(isFavorite);
+
+  const handleSort = (): void => {
+    setActivFavorite(!isActivFavorite);
+  };
+
+  const offersMap = offers.slice(0, 3);
 
   return (
     <div className="page">
@@ -64,7 +78,7 @@ function Property(props: PropertyProps): JSX.Element {
                 <h1 className="property__name">
                   {title}
                 </h1>
-                <button className={`property__bookmark-button button ${isFavorite ? 'property__bookmark-button--active' : ''}`} type="button">
+                <button className={`property__bookmark-button button ${isActivFavorite ? 'property__bookmark-button--active' : ''}`} type="button" onClick={handleSort} >
                   <svg className="property__bookmark-icon" width="31" height="33">
                     <use xlinkHref="#icon-bookmark"></use>
                   </svg>
@@ -129,14 +143,18 @@ function Property(props: PropertyProps): JSX.Element {
 
             </div>
           </div>
-          <section className="property__map map"></section>
+          <section className="property__map map">
+
+            <Map offers={offers} mapSize={MapSize.MapHeighthOffer} focusedCard={focusedCard}/>
+
+          </section>
         </section>
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
             <div className="near-places__list places__list">
-              {mockOffers.slice(0, 3).map((offer) => (
-                <OfferCard {...offer} key={offer.id} cardType={page.Near} />
+              {offersMap.map((offer) => (
+                <OfferCard {...offer} key={offer.id} cardType={page.Near} onListItemHover={onListItemHover}/>
               ))}
             </div>
           </section>
