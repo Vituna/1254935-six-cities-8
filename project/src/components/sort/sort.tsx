@@ -1,11 +1,11 @@
 import {useState} from 'react';
 
 type SortProps = {
-  PlacesSort: string[];
+  placesSort: string[];
 }
 
 function Sort(props: SortProps): JSX.Element {
-  const {PlacesSort} = props;
+  const {placesSort} = props;
 
   const [isOpenSort, setOpenSort] = useState(false);
 
@@ -25,7 +25,7 @@ function Sort(props: SortProps): JSX.Element {
       <ul
         className={`places__options places__options--custom ${isOpenSort ? 'places__options--opened' : ''}`}
       >
-        {PlacesSort.map((option, i) => (
+        {placesSort.map((option, i) => (
           <li className="places__option" tabIndex={0} key={`${option + i}`} >
             {option}
           </li>
