@@ -1,18 +1,19 @@
 import Header from '../header/header';
 import Logo from '../logo/logo';
 import OfferCard from '../offer-card/offer-card';
-import {Offers} from '../../types/offer';
+import {Offer} from '../../types/offer';
 
 import {page} from '../../const';
 
 type FavoritesProps = {
-  offers: Offers[];
+  offers: Offer[];
   authorizationStatus: string;
   onListItemHover: (listItemName: string) => void;
+  onListItemLeave: () => void;
 }
 
 function Favorites(props: FavoritesProps): JSX.Element {
-  const {offers, authorizationStatus, onListItemHover} = props;
+  const {offers, authorizationStatus, onListItemHover, onListItemLeave} = props;
 
   return (
     <div className="page">
@@ -34,7 +35,7 @@ function Favorites(props: FavoritesProps): JSX.Element {
                 </div>
                 <div className="favorites__places">
                   {offers.map((offer) => (
-                    <OfferCard {...offer} key={offer.id}  cardType={page.Favorites} onListItemHover={onListItemHover}/>
+                    <OfferCard {...offer} key={offer.id}  cardType={page.Favorites} onListItemHover={onListItemHover}  onListItemLeave={onListItemLeave}/>
                   ))}
                 </div>
               </li>

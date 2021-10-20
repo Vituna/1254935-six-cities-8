@@ -3,14 +3,14 @@ import {Icon, Marker} from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import useMap from '../../hooks/use-map/use-map';
-import {Offers} from '../../types/offer';
+import {Offer} from '../../types/offer';
 
 import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
 
 type MapProps = {
-  offers: Offers[];
+  offers: Offer[];
   mapSize: string;
-  focusedCard?: Offers | undefined;
+  focusedCard?: Offer | undefined;
 }
 
 const defaultCustomIcon = new Icon({
@@ -28,6 +28,7 @@ const currentCustomIcon = new Icon({
 function Map(props: MapProps): JSX.Element {
 
   const {offers, mapSize, focusedCard} = props;
+
   const city = offers[0];
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
