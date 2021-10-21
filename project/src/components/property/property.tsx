@@ -8,14 +8,14 @@ import {mockReviews} from '../../mocks/reviews';
 import Map from '../map/map';
 
 import {page, MapSize} from '../../const';
-import {Offers} from '../../types/offer';
-
+import {Offer} from '../../types/offer';
 
 type PropertyProps = {
   authorizationStatus: string;
-  offers: Offers[];
-  focusedCard?: Offers | undefined;
+  offers: Offer[];
+  focusedCard?: Offer | undefined;
   onListItemHover: (listItemName: string) => void;
+  onListItemLeave: () => void;
 }
 
 type UseParamTypes = {
@@ -23,7 +23,7 @@ type UseParamTypes = {
 }
 
 function Property(props: PropertyProps): JSX.Element {
-  const {offers, authorizationStatus, focusedCard, onListItemHover} = props;
+  const {offers, authorizationStatus, focusedCard, onListItemHover, onListItemLeave} = props;
   const params = useParams<UseParamTypes>();
   const item = offers[+params.id - 1];
   const {
@@ -41,10 +41,10 @@ function Property(props: PropertyProps): JSX.Element {
     type,
   } = item;
 
-  const [isActivFavorite, setActivFavorite] = useState(isFavorite);
+  const [isActiveFavorite, setActiveFavorite] = useState(isFavorite);
 
   const handleSort = (): void => {
-    setActivFavorite(!isActivFavorite);
+    setActiveFavorite(!isActiveFavorite);
   };
 
   const offersMap = offers.slice(0, 3);
@@ -78,7 +78,7 @@ function Property(props: PropertyProps): JSX.Element {
                 <h1 className="property__name">
                   {title}
                 </h1>
-                <button className={`property__bookmark-button button ${isActivFavorite ? 'property__bookmark-button--active' : ''}`} type="button" onClick={handleSort} >
+                <button className={`property__bookmark-button button ${isActiveFavorite ? 'property__bookmark-button--active' : ''}`} type="button" onClick={handleSort} >
                   <svg className="property__bookmark-icon" width="31" height="33">
                     <use xlinkHref="#icon-bookmark"></use>
                   </svg>
@@ -145,7 +145,7 @@ function Property(props: PropertyProps): JSX.Element {
           </div>
           <section className="property__map map">
 
-            <Map offers={offers} mapSize={MapSize.MapHeighthOffer} focusedCard={focusedCard}/>
+            <Map offers={offers} mapSize={MapSize.MapHeightOffer} focusedCard={focusedCard}/>
 
           </section>
         </section>
@@ -154,7 +154,7 @@ function Property(props: PropertyProps): JSX.Element {
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
             <div className="near-places__list places__list">
               {offersMap.map((offer) => (
-                <OfferCard {...offer} key={offer.id} cardType={page.Near} onListItemHover={onListItemHover}/>
+                <OfferCard {...offer} key={offer.id} cardType={page.Near} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave}/>
               ))}
             </div>
           </section>
