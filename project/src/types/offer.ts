@@ -66,3 +66,9 @@ export type CityLocation = {
     zoom: number,
 }
 
+export enum PlacesSortType {
+  Popular = 'Popular',
+  PriceLow = 'Price: low to high',
+  PriceHigh = 'Price: high to low',
+  Top = 'Top rated first',
+}

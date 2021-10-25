@@ -1,8 +1,7 @@
-import {useRef, useEffect} from 'react';
-import {Icon, Marker} from 'leaflet';
+import {useRef, useEffect, useMemo, useState, useCallback} from 'react';
+import leaflet, { Map, LayerGroup, TileLayer } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import useMap from '../../hooks/use-map/use-map';
 import {Offer} from '../../types/offer';
 
 import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
@@ -11,44 +10,85 @@ type MapProps = {
   offers: Offer[];
   mapSize: string;
   focusedCard?: Offer | undefined;
+  zoomOnOffer?: boolean,
 }
 
-const defaultCustomIcon = new Icon({
+const defaultCustomIcon = new leaflet.Icon({
   iconUrl: URL_MARKER_DEFAULT,
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 });
 
-const currentCustomIcon = new Icon({
+const currentCustomIcon = new leaflet.Icon({
   iconUrl: URL_MARKER_CURRENT,
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 });
 
-function Map(props: MapProps): JSX.Element {
+function MapSity(props: MapProps): JSX.Element {
 
-  const {offers, mapSize, focusedCard} = props;
+  const {offers, mapSize, focusedCard, zoomOnOffer = true} = props;
 
-  const city = offers[0];
   const mapRef = useRef(null);
-  const map = useMap(mapRef, city);
 
-  useEffect(() => {
-    if (map) {
-      offers.forEach((offer) => {
-        const marker = new Marker({
-          lat: offer.location.latitude,
-          lng: offer.location.longitude,
-        });
-        marker
-          .setIcon(
-            focusedCard !== undefined && offer.title === focusedCard.title
-              ? currentCustomIcon
-              : defaultCustomIcon,
-          ).addTo(map);
-      });
+  const [mapInstance, setMapInstance] = useState<Map | null>(null);
+
+  const pinsGroupRef = useRef<LayerGroup>(new leaflet.LayerGroup());
+
+  const city = useMemo(() => offers[0].city, [offers]);
+
+  const createMap = useCallback(() => {
+    if (!mapRef.current || mapInstance) {
+      return;
     }
-  }, [map, offers, focusedCard]);
+
+    const { location: { latitude, longitude, zoom } } = city;
+
+    const map = new Map(mapRef.current, {
+      center: [latitude, longitude],
+      zoom: zoom,
+    });
+
+    map.addLayer(new TileLayer(
+      'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+      {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      },
+    ));
+    setMapInstance(map);
+  }, [city, mapRef, mapInstance]);
+
+  const renderOffersPins = useCallback(() => {
+    if (!mapInstance) {
+      return;
+    }
+
+    const { location: { latitude, longitude, zoom } } = city;
+
+    pinsGroupRef.current.clearLayers();
+
+    mapInstance.flyTo([latitude, longitude], zoom);
+
+    offers.forEach((offer) => {
+      const pin = leaflet.marker({
+        lat: offer.location.latitude,
+        lng: offer.location.longitude,
+      });
+
+      const isActive = focusedCard && offer.title === focusedCard.title;
+
+      pin.setIcon(isActive ? currentCustomIcon : defaultCustomIcon)
+        .addTo(pinsGroupRef.current);
+
+      isActive && zoomOnOffer && mapInstance.flyTo([offer.location.latitude, offer.location.longitude], offer.location.zoom);
+
+      pinsGroupRef.current.addTo(mapInstance);
+    });
+  }, [zoomOnOffer, focusedCard, city, mapInstance, offers]);
+
+  useEffect(createMap, [createMap]);
+
+  useEffect(renderOffersPins, [renderOffersPins]);
 
   return (
     <div
@@ -58,4 +98,4 @@ function Map(props: MapProps): JSX.Element {
     </div>);
 }
 
-export default Map;
+export default MapSity;

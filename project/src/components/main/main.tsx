@@ -9,22 +9,23 @@ import LocationsItem from '../locations-item/locations-item';
 import Sort from '../sort/sort';
 import CardsList from '../cards-list/cards-list';
 import Map from '../map/map';
-import MainEmpty from '../main-empty/main-empty';
+// import MainEmpty from '../main-empty/main-empty';
+import Preloader from '../loading-screen/loading-screen';
 
 import {MapSize} from '../../const';
-import {Offer} from '../../types/offer';
+import {Offer, PlacesSortType} from '../../types/offer';
 
 type MainScreenProps = {
   cities: string[];
-  placesSort: string[];
+  placesSort: PlacesSortType[];
   authorizationStatus: string;
   onListItemHover: (listItemName: string) => void;
   onListItemLeave: () => void;
   focusedCard?: Offer | undefined;
 }
 
-const mapStateToProps = ({ currentCity, offers, typeSort }: Store) => (
-  { currentCity, offers, typeSort }
+const mapStateToProps = ({ currentCity, hotels, typeSort, isOffersLoaded }: Store) => (
+  { currentCity, hotels, typeSort, isOffersLoaded }
 );
 
 const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
@@ -32,7 +33,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
     dispatch(changeCurrentCity(city));
   },
 
-  onSortChange: (option: string) => {
+  onSortChange: (option: PlacesSortType) => {
     dispatch(changePlacesSort(option));
   },
 });
@@ -43,7 +44,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function Main(props: PropsFromRedux & MainScreenProps): JSX.Element {
 
-  const {offers, cities, placesSort, authorizationStatus, focusedCard, currentCity, typeSort, onListItemHover, onListItemLeave, onCityChange, onSortChange} = props;
+  const {hotels: offers, cities, placesSort, authorizationStatus, focusedCard, currentCity, typeSort, onListItemHover, onListItemLeave, onCityChange, onSortChange} = props;
 
   const cityOffers = offers.filter((offer) => currentCity === offer.city.name);
   const noOffers = cityOffers.length === 0;
@@ -56,29 +57,30 @@ function Main(props: PropsFromRedux & MainScreenProps): JSX.Element {
       <main className={`page__main page__main--index' ${noOffers ? 'page__main--index-empty' : ''}`}>
         <h1 className="visually-hidden">Cities</h1>
 
-        <LocationsItem cities={cities} currentCity={currentCity} onCityChange={onCityChange}/>
+        {noOffers ? (<Preloader/>) : (
+          <>
+            <LocationsItem cities={cities} currentCity={currentCity} onCityChange={onCityChange} />
+            <div className="cities">
+              <div className="cities__places-container container">
+                <section className="cities__places places">
+                  <h2 className="visually-hidden">Places</h2>
+                  <b className="places__found">{cityOffers.length} places to stay in {currentCity}</b>
 
-        {noOffers ? (<MainEmpty currentCity={currentCity} />) : (
-          <div className="cities">
-            <div className="cities__places-container container">
-              <section className="cities__places places">
-                <h2 className="visually-hidden">Places</h2>
-                <b className="places__found">{cityOffers.length} places to stay in {currentCity}</b>
+                  <Sort placesSort={placesSort} typeSort={typeSort} onSortChange={onSortChange} />
 
-                <Sort placesSort={placesSort} typeSort={typeSort} onSortChange={onSortChange}/>
-
-                <CardsList offers={cityOffers} typeSort={typeSort} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave}/>
-
-              </section>
-              <div className="cities__right-section">
-                <section className="cities__map map">
-
-                  <Map offers={cityOffers} mapSize={MapSize.MapHeightOffer} focusedCard={focusedCard}/>
+                  <CardsList offers={cityOffers} typeSort={typeSort} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave} />
 
                 </section>
+                <div className="cities__right-section">
+                  <section className="cities__map map">
+
+                    <Map offers={cityOffers} mapSize={MapSize.MapHeightOffer} focusedCard={focusedCard} />
+
+                  </section>
+                </div>
               </div>
             </div>
-          </div>)}
+          </>)}
 
       </main>
     </div>
@@ -88,3 +90,4 @@ function Main(props: PropsFromRedux & MainScreenProps): JSX.Element {
 export {Main};
 
 export default connector(Main);
+// (<MainEmpty currentCity={currentCity} />)

@@ -1,11 +1,11 @@
 import OfferCard from '../offer-card/offer-card';
-import {Offer} from '../../types/offer';
+import {Offer, PlacesSortType} from '../../types/offer';
 
 import {page} from '../../const';
 
 type CardsProps = {
   offers: Offer[];
-  typeSort: string;
+  typeSort: PlacesSortType;
   onListItemHover: (listItemName: string) => void;
   onListItemLeave: () => void;
 }
