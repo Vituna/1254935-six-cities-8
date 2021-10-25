@@ -5,6 +5,7 @@ import {Actions, ActionType} from '../types/action';
 const initialState: Store = {
   currentCity: 'Paris',
   offers: mockOffers,
+  typeSort: 'Popular',
 };
 
 const reducer = (state: Store = initialState, action: Actions): Store => {
@@ -13,6 +14,11 @@ const reducer = (state: Store = initialState, action: Actions): Store => {
       return {
         ...state, currentCity: action.payload,
       };
+    case ActionType.ChangeSort:
+      return {
+        ...state, typeSort: action.payload,
+      };
+
     default:
       return state;
   }

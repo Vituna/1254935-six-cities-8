@@ -29,7 +29,7 @@ export const mockOffers = [
     },
     maxAdults: 4,
     previewImage: 'img/apartment-01.jpg',
-    price: 10,
+    price: 10000,
     rating: 2,
     title: 'Beautiful & luxurious studio at great ',
     type: 'apartment',

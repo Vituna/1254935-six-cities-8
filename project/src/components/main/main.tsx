@@ -2,7 +2,7 @@ import {Dispatch} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
 import {Store} from '../../types/store';
 import {Actions} from '../../types/action';
-import {changeCurrentCity} from '../../store/action';
+import {changeCurrentCity, changePlacesSort} from '../../store/action';
 
 import Header from '../header/header';
 import LocationsItem from '../locations-item/locations-item';
@@ -23,13 +23,17 @@ type MainScreenProps = {
   focusedCard?: Offer | undefined;
 }
 
-const mapStateToProps = ({ currentCity, offers }: Store) => (
-  { currentCity, offers }
+const mapStateToProps = ({ currentCity, offers, typeSort }: Store) => (
+  { currentCity, offers, typeSort }
 );
 
 const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
   onCityChange: (city: string) => {
     dispatch(changeCurrentCity(city));
+  },
+
+  onSortChange: (option: string) => {
+    dispatch(changePlacesSort(option));
   },
 });
 
@@ -39,7 +43,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function Main(props: PropsFromRedux & MainScreenProps): JSX.Element {
 
-  const {offers, cities, placesSort, authorizationStatus, focusedCard, onListItemHover, onListItemLeave, currentCity, onCityChange} = props;
+  const {offers, cities, placesSort, authorizationStatus, focusedCard, currentCity, typeSort, onListItemHover, onListItemLeave, onCityChange, onSortChange} = props;
 
   const cityOffers = offers.filter((offer) => currentCity === offer.city.name);
   const noOffers = cityOffers.length === 0;
@@ -61,9 +65,9 @@ function Main(props: PropsFromRedux & MainScreenProps): JSX.Element {
                 <h2 className="visually-hidden">Places</h2>
                 <b className="places__found">{cityOffers.length} places to stay in {currentCity}</b>
 
-                <Sort placesSort={placesSort}/>
+                <Sort placesSort={placesSort} typeSort={typeSort} onSortChange={onSortChange}/>
 
-                <CardsList offers={cityOffers} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave}/>
+                <CardsList offers={cityOffers} typeSort={typeSort} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave}/>
 
               </section>
               <div className="cities__right-section">

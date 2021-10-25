@@ -3,6 +3,7 @@ import {Offer} from './offer';
 export const enum ActionType {
   ChangeCity = 'app/changeCity',
   ChangeOffers = 'app/changeOffers',
+  ChangeSort = 'app/changeSort'
 }
 
 export type ChangeCurrentCityAction = {
@@ -15,4 +16,9 @@ export type ChangeOffersAction = {
   payload: Offer[];
 }
 
-export type Actions = ChangeCurrentCityAction | ChangeOffersAction;
+export type ChangePlacesSortAction = {
+  type: ActionType.ChangeSort;
+  payload: string;
+}
+
+export type Actions = ChangeCurrentCityAction | ChangeOffersAction | ChangePlacesSortAction;
