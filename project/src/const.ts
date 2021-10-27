@@ -1,3 +1,4 @@
+
 export enum AuthorizationStatus {
   Auth = 'AUTH',
   NoAuth = 'NO_AUTH',
@@ -19,7 +20,7 @@ export enum page {
   Near = 'near',
 }
 
-export const PlacesSort = [
+export const PlacesSort: any = [
   'Popular',
   'Price: low to high',
   'Price: high to low',
@@ -33,4 +34,10 @@ export const URL_MARKER_CURRENT = 'img/pin-active.svg';
 export enum MapSize {
   MapHeightOffer = '850px',
   MapHeightProperty = '579px'
+}
+
+export enum APIRoute {
+  Hotels = '/hotels',
+  Login = '/login',
+  Logout = '/logout',
 }

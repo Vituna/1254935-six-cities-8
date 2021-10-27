@@ -1,12 +1,29 @@
 import { Link } from 'react-router-dom';
+import {connect, ConnectedProps} from 'react-redux';
+import {ThunkAppDispatch} from '../../types/action';
+import {logoutAction} from '../../store/api-actions';
+
+
 import {AuthorizationStatus} from '../../const';
 
 type UserProps = {
   authorizationStatus: string;
 }
 
-function User(props: UserProps): JSX.Element {
-  const {authorizationStatus} = props;
+const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
+  logoutGame() {
+    dispatch(logoutAction());
+  },
+});
+
+const connector = connect(null, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+type ConnectedComponentProps = PropsFromRedux & UserProps;
+
+
+function User(props: ConnectedComponentProps): JSX.Element {
+  const {authorizationStatus, logoutGame} = props;
 
   return (
     <nav className="header__nav">
@@ -20,7 +37,12 @@ function User(props: UserProps): JSX.Element {
                 <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
               </Link>
             </li>
-            <li className="header__nav-item">
+            <li className="header__nav-item" onClick={(evt) => {
+              evt.preventDefault();
+
+              logoutGame();
+            }}
+            >
               <Link className="header__nav-link" to="/login">
                 <span className="header__signout">Sign out</span>
               </Link>
@@ -38,4 +60,5 @@ function User(props: UserProps): JSX.Element {
   );
 }
 
-export default User;
+export {User};
+export default connector(User);
