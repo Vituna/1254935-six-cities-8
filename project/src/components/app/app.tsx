@@ -5,7 +5,7 @@ import {useState} from 'react';
 import {AuthorizationStatus, cities, PlacesSort} from '../../const';
 import {Offer} from '../../types/offer';
 
-// import Preloader from '../loading-screen/loading-screen';
+import Preloader from '../loading-screen/loading-screen';
 import Main from '../main/main';
 import SignIn from '../sign-in/sign-in';
 import Favorites from '../favorites/favorites';
@@ -21,11 +21,11 @@ const browserHistory = createBrowserHistory();
 export const isCheckedAuth = (authorizationStatus: AuthorizationStatus): boolean =>
   authorizationStatus === AuthorizationStatus.Unknown;
 
-const mapStateToProps = ({hotels, authorizationStatus, isDataLoaded, isOffersLoaded}: Store) => ({
+const mapStateToProps = ({hotels, authorizationStatus, isDataLoaded, isOffersLoading}: Store) => ({
   authorizationStatus,
   isDataLoaded,
   hotels,
-  isOffersLoaded,
+  isOffersLoading,
 });
 
 const connector = connect(mapStateToProps);
@@ -33,19 +33,15 @@ const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function App(props: PropsFromRedux): JSX.Element {
-  const {hotels: offers, authorizationStatus} = props;
+  const {hotels: offers, authorizationStatus, isDataLoaded} = props;
 
   const [focusedCard, setFocusedCard] = useState<Offer | undefined>(undefined);
 
-  // if (isCheckedAuth(authorizationStatus) || !isDataLoaded) {
-  //   return (
-  //     <Preloader />
-  //   );
-  // }
-  // if (isOffersLoaded) {
-  //   <Preloader />;
-  // }
-
+  if (isCheckedAuth(authorizationStatus) || !isDataLoaded) {
+    return (
+      <Preloader />
+    );
+  }
 
   const onListItemHover = (listItemName: string) => {
     const currentPoint = offers.find((offer) => offer.title === listItemName);
@@ -72,7 +68,7 @@ function App(props: PropsFromRedux): JSX.Element {
         >
         </PrivateRoute>
         <Route exact path={'/offer/:id'}>
-          <Property offers={offers} authorizationStatus={authorizationStatus} focusedCard={focusedCard} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave}/>
+          <Property authorizationStatus={authorizationStatus} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave}/>
         </Route>
         <Route>
           <NoFound />

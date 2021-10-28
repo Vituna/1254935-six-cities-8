@@ -1,15 +1,37 @@
-import React from 'react';
+import { useState } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+// import { sendReviewAction } from '../../store/api-actions';
+// import { ThunkAppDispatch } from '../../types/action';
 
-function ReviewForm(): JSX.Element {
-  const [reviewValue, setReviewValue] = React.useState('');
-  const [rating, setRating] = React.useState(0);
+// const mapStateToProps = ({ authorizationStatus }: Store) => (
+//   { authorizationStatus }
+// );
+
+// const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
+//   sendReviews(id: number, reviewData: any) {
+//     dispatch(sendReviewAction(id, reviewData));
+//   },
+// });
+
+const connector = connect(null, null);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+
+function ReviewForm(sendReviews: PropsFromRedux): JSX.Element {
+  const [reviewValue] = useState('');
+  const [rating, setRating] = useState(0);
 
   const handleSubmitForm = (evt: React.FormEvent<HTMLFormElement>): void => {
     evt.preventDefault();
   };
 
   const handleChangeText = (evt: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    setReviewValue(evt.target.value);
+    // setReviewValue(evt.target.value);
+    // sendReviews(id, {
+    //   rating: formRef.current.rating.value,
+    //   comment: reviewRef.current.value,
+    // });
   };
 
   const handleChangeRating = (evt: React.ChangeEvent<HTMLInputElement>): void => {
@@ -75,4 +97,5 @@ function ReviewForm(): JSX.Element {
   );
 }
 
-export default ReviewForm;
+export  {ReviewForm};
+export default connector(ReviewForm);

@@ -60,6 +60,20 @@ export type OfferReview = {
   user: ReviewUser;
 }
 
+export type OfferReviews = {
+  id: number,
+  user: {
+    id: number,
+    isPro: boolean,
+    name: string,
+    avatarUrl: string,
+  },
+  rating: number,
+  comment: string,
+  date: string,
+};
+
+
 export type CityLocation = {
     latitude: number,
     longitude: number,
@@ -72,3 +86,38 @@ export enum PlacesSortType {
   PriceHigh = 'Price: high to low',
   Top = 'Top rated first',
 }
+
+export type OfferReviewResponse = Omit<OfferReviews, 'user'>
+& {
+  user: {
+    'id': number,
+    'is_pro': boolean,
+    'name': string,
+    'avatar_url': string,
+  }
+}
+
+export type UseParamTypes = {
+  id: string;
+}
+
+export type OfferResponse = Omit<
+  Offer,
+  | 'host'
+  | 'isFavorite'
+  | 'isPremium'
+  | 'previewImage'
+  | 'maxAdults'
+> & {
+  host: {
+    'avatar_url': string,
+    'id': number,
+    'is_pro': boolean,
+    'name': string,
+  },
+  'is_favorite': boolean,
+  'is_premium': boolean,
+  'max_adults': number,
+  'preview_image': string,
+}
+

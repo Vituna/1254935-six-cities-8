@@ -9,8 +9,8 @@ import LocationsItem from '../locations-item/locations-item';
 import Sort from '../sort/sort';
 import CardsList from '../cards-list/cards-list';
 import Map from '../map/map';
-// import MainEmpty from '../main-empty/main-empty';
-import Preloader from '../loading-screen/loading-screen';
+import MainEmpty from '../main-empty/main-empty';
+// import Preloader from '../loading-screen/loading-screen';
 
 import {MapSize} from '../../const';
 import {Offer, PlacesSortType} from '../../types/offer';
@@ -24,8 +24,8 @@ type MainScreenProps = {
   focusedCard?: Offer | undefined;
 }
 
-const mapStateToProps = ({ currentCity, hotels, typeSort, isOffersLoaded }: Store) => (
-  { currentCity, hotels, typeSort, isOffersLoaded }
+const mapStateToProps = ({ currentCity, hotels, typeSort, isOffersLoading }: Store) => (
+  { currentCity, hotels, typeSort, isOffersLoading }
 );
 
 const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
@@ -57,7 +57,7 @@ function Main(props: PropsFromRedux & MainScreenProps): JSX.Element {
       <main className={`page__main page__main--index' ${noOffers ? 'page__main--index-empty' : ''}`}>
         <h1 className="visually-hidden">Cities</h1>
 
-        {noOffers ? (<Preloader/>) : (
+        {noOffers ? (<MainEmpty currentCity={currentCity}/>) : (
           <>
             <LocationsItem cities={cities} currentCity={currentCity} onCityChange={onCityChange} />
             <div className="cities">
@@ -90,4 +90,3 @@ function Main(props: PropsFromRedux & MainScreenProps): JSX.Element {
 export {Main};
 
 export default connector(Main);
-// (<MainEmpty currentCity={currentCity} />)
