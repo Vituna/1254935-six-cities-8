@@ -1,13 +1,15 @@
 import {OfferReview} from '../../types/offer';
 import ReviewForm from '../review-form/review-form';
 import ReviewItem from '../review-item/review-item';
+import {AuthorizationStatus} from '../../const';
 
 type ReviewListProps = {
   review: OfferReview[];
+  authorizationStatus: string
 }
 
 function ReviewList(props: ReviewListProps): JSX.Element {
-  const {review} = props;
+  const {review, authorizationStatus} = props;
 
   return (
     <section className="property__reviews reviews">
@@ -17,7 +19,9 @@ function ReviewList(props: ReviewListProps): JSX.Element {
       <ul className="reviews__list">
         {review.map((comment) => <ReviewItem {...comment} key={comment.id} />)}
       </ul>
-      <ReviewForm />
+      {authorizationStatus === AuthorizationStatus.Auth ?
+        <ReviewForm />
+        : ''}
     </section>
   );
 }

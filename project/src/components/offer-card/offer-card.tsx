@@ -7,8 +7,8 @@ import {page} from '../../const';
 
 interface OfferCardProps extends OfferCardType {
   cardType: string;
-  onListItemHover: (listItemName: string) => void;
-  onListItemLeave: () => void;
+  onListItemHover: ((listItemName: string) => void)
+  onListItemLeave: (() => void)
 }
 
 function OfferCard(props: OfferCardProps): JSX.Element {

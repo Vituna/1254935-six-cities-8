@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import {connect, ConnectedProps} from 'react-redux';
 import {ThunkAppDispatch} from '../../types/action';
 import {logoutAction} from '../../store/api-actions';
-
+import {Store} from '../../types/store';
 
 import {AuthorizationStatus} from '../../const';
 
@@ -16,14 +16,17 @@ const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
   },
 });
 
-const connector = connect(null, mapDispatchToProps);
+const mapStateToProps = ({ currentEmail, authInfo }: Store) => (
+  { currentEmail, authInfo }
+);
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 type ConnectedComponentProps = PropsFromRedux & UserProps;
 
-
 function User(props: ConnectedComponentProps): JSX.Element {
-  const {authorizationStatus, logoutGame} = props;
+  const {authorizationStatus, logoutGame, currentEmail, authInfo} = props;
 
   return (
     <nav className="header__nav">
@@ -34,7 +37,7 @@ function User(props: ConnectedComponentProps): JSX.Element {
               <Link className="header__nav-link header__nav-link--profile" to="/favorites">
                 <div className="header__avatar-wrapper user__avatar-wrapper">
                 </div>
-                <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
+                <span className="header__user-name user__name">{currentEmail || authInfo.email}</span>
               </Link>
             </li>
             <li className="header__nav-item" onClick={(evt) => {
