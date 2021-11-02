@@ -1,7 +1,9 @@
 import {OfferReview} from '../../types/offer';
+import { formatDateAttribute, formatDateValue } from '../../utils';
 
 function ReviewItem(props: OfferReview): JSX.Element {
   const {user, rating, date, comment} = props;
+
   return (
     <li className="reviews__item">
       <div className="reviews__user user">
@@ -18,8 +20,8 @@ function ReviewItem(props: OfferReview): JSX.Element {
           </div>
         </div>
         <p className="reviews__text">{comment}</p>
-        <time className="reviews__time" dateTime="2019-04-24">
-          {date}
+        <time className="reviews__time" dateTime={formatDateAttribute(date)}>
+          {formatDateValue(date)}
         </time>
       </div>
     </li>

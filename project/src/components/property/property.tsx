@@ -54,7 +54,7 @@ function Property(props: PropsFromRedux & PropertyProps): JSX.Element {
     }
     return [...nearHotel, offer];
   }, [offer, nearHotel]);
-
+  // Добавление в Фавориты буду делать и этот код пойдёт в действие:)
   // const [isActiveFavorite, setActiveFavorite] = useState(offer.isFavorite);
   // const handleSort = (): void => {
   //   setActiveFavorite(!isActiveFavorite);
@@ -150,7 +150,7 @@ function Property(props: PropsFromRedux & PropertyProps): JSX.Element {
                   </div>
                 </div>
 
-                <ReviewList review={reviews} authorizationStatus={authorizationStatus}/>
+                <ReviewList review={reviews} authorizationStatus={authorizationStatus} id={id}/>
 
               </div>
             </div>

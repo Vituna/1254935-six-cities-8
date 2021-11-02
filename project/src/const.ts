@@ -1,4 +1,3 @@
-
 export enum AuthorizationStatus {
   Auth = 'AUTH',
   NoAuth = 'NO_AUTH',
@@ -49,3 +48,35 @@ export const EMAIL_VALIDATION_MESSAGE = 'Please enter a valid email address.';
 export const PASSWORD_VALIDATION_MESSAGE = 'Please enter a valid password.';
 export const AUTH_USER_ERROR_MESSAGE = 'User authorization error';
 export const FETCH_OFFERS_ERROR_MESSAGE = 'Error loading available offers';
+
+export enum ReviewPostStatus {
+  Pristine = 'PRISTINE',
+  Posting = 'POSTING',
+  Posted = 'POSTED',
+  NotPosted = 'NOT_POSTED',
+}
+
+export const Ratings = [
+  {
+    title: 'perfect',
+    value: '5',
+  },
+  {
+    title: 'good',
+    value: '4',
+  },
+  {
+    title: 'not bad',
+    value: '3',
+  },
+  {
+    title: 'badly',
+    value: '2',
+  },
+  {
+    title: 'terribly',
+    value: '1',
+  },
+];
+
+export const AUTH_FAIL_MESSAGE = 'Не забудьте авторизоваться';

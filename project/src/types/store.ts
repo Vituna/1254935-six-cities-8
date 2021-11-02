@@ -1,16 +1,21 @@
 import {Offer, PlacesSortType, OfferReview} from './offer';
-import {AuthorizationStatus} from '../const';
+import {AuthorizationStatus, ReviewPostStatus} from '../const';
+
+type Data = {
+  email: string
+}
 
 export type Store = {
   currentCity: string,
   currentEmail: string,
   hotels: Offer[],
-  currentHotel: Offer | any,
+  currentHotel: Offer | null,
   reviews: OfferReview[],
   nearHotel: Offer[],
   typeSort: PlacesSortType,
   authorizationStatus: AuthorizationStatus,
   isDataLoaded: boolean,
   isOffersLoading: boolean,
-  authInfo: any,
+  authInfo: Data,
+  reviewPostStatus : ReviewPostStatus,
 }

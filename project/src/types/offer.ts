@@ -121,3 +121,21 @@ export type OfferResponse = Omit<
   'preview_image': string,
 }
 
+export type NewReview = {
+  comment: string,
+  rating: number,
+};
+
+export type UserInfo = {
+  avatarUrl: string,
+  email: string,
+  id: number,
+  isPro: boolean,
+  name: string,
+  token: string,
+ };
+
+export type UserInfoResponse = Omit<UserInfo, 'avatarUrl' | 'isPro'> & {
+ 'avatar_url': string,
+ 'is_pro': boolean,
+};

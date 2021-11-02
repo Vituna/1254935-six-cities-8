@@ -3,6 +3,7 @@ import { requireAuthorization, requireLogout, setAuthInfoAction } from '../store
 import {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import {AxiosInstance} from 'axios';
 import {Store} from '../types/store';
+import { ReviewPostStatus } from '../const';
 
 export const enum ActionType {
   ChangeCity = 'app/changeCity',
@@ -20,6 +21,8 @@ export const enum ActionType {
   ChangeEmail = 'app/changeEmail',
   LoadReviews = 'data/loadReviews',
   SendReview = 'data/SendReview',
+  SendReviewStatus = 'user/sendReviewStatus',
+
 
 }
 
@@ -78,8 +81,13 @@ export type SendReview = {
   payload: boolean,
 }
 
+export type SendReviewStatusAction = {
+  type: ActionType.SendReviewStatus,
+  payload: ReviewPostStatus,
+}
+
 export type Actions = ChangeCurrentCityAction | ChangeOffersAction | ChangePlacesSortAction | ReturnType<typeof requireAuthorization> | ReturnType<typeof requireLogout> | ReturnType<typeof setAuthInfoAction> |
-LoadOffersAction | LoadOffersStart | ChangeCurrentEmailAction | LoadReviewsAction | LoadCurrentHotelAction | LoadCurrentOfferErrorAction | LoadNearHotelCompleteAction | SendReview;
+LoadOffersAction | LoadOffersStart | ChangeCurrentEmailAction | LoadReviewsAction | LoadCurrentHotelAction | LoadCurrentOfferErrorAction | LoadNearHotelCompleteAction | SendReview | SendReviewStatusAction;
 
 export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, Store, AxiosInstance, Actions>;
 

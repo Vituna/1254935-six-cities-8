@@ -1,7 +1,7 @@
 import {Store} from '../types/store';
 import {Actions, ActionType} from '../types/action';
 import {PlacesSortType} from '../types/offer';
-import {AuthorizationStatus} from '../const';
+import {AuthorizationStatus, ReviewPostStatus} from '../const';
 
 const initialState = {
   currentCity: 'Paris',
@@ -12,9 +12,10 @@ const initialState = {
   nearHotel: [],
   typeSort: PlacesSortType.Popular,
   authorizationStatus: AuthorizationStatus.Unknown,
-  authInfo: {},
+  authInfo: {email: ''},
   isDataLoaded: false,
   isOffersLoading: false,
+  reviewPostStatus: ReviewPostStatus.Pristine,
 };
 
 const reducer = (state: Store = initialState, action: Actions): Store => {
@@ -64,6 +65,12 @@ const reducer = (state: Store = initialState, action: Actions): Store => {
       return {
         ...state, isOffersLoading: action.payload,
       };
+    case ActionType.SendReviewStatus:
+      return {
+        ...state,
+        reviewPostStatus: action.payload,
+      };
+
     default:
       return state;
   }

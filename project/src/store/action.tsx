@@ -1,6 +1,6 @@
-import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction, LoadCurrentHotelAction, LoadCurrentOfferErrorAction, LoadNearHotelCompleteAction} from '../types/action';
-import {Offer, OfferReview, PlacesSortType} from '../types/offer';
-import {AuthorizationStatus} from '../const';
+import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction, LoadCurrentHotelAction, LoadCurrentOfferErrorAction, LoadNearHotelCompleteAction, SendReviewStatusAction} from '../types/action';
+import {Offer, OfferReview, PlacesSortType, UserInfo} from '../types/offer';
+import {AuthorizationStatus, ReviewPostStatus} from '../const';
 
 export const changeCurrentCity = (currentCity: string): ChangeCurrentCityAction => ({
   type: ActionType.ChangeCity,
@@ -17,21 +17,11 @@ export const requireAuthorization = (authInfo: AuthorizationStatus) => ({
   payload: authInfo,
 } as const);
 
-export type UserInfo = {
-  avatarUrl: string;
-  email: string;
-  id: number;
-  isPro: boolean;
-  name: string;
-  token: string;
-};
-
 export const setAuthInfoAction = (authInfo: UserInfo) =>
   ({
     type: ActionType.SetAuthInfo,
     payload: authInfo,
   } as const);
-
 
 export const requireLogout = () => ({
   type: ActionType.RequireLogout,
@@ -71,9 +61,7 @@ export const loadReviews = (reviews: OfferReview[]): LoadReviewsAction => ({
   payload: reviews,
 });
 
-export const sendReview = (status: unknown) => ({
-  type: ActionType.SendReview,
-  payload: status,
+export const sendReviewStatus = (reviewPostStatus: ReviewPostStatus): SendReviewStatusAction => ({
+  type: ActionType.SendReviewStatus,
+  payload: reviewPostStatus,
 });
-
-

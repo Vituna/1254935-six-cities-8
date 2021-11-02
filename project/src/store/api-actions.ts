@@ -1,13 +1,11 @@
 import {ThunkActionResult} from '../types/action';
-import {requireAuthorization, requireLogout, loadHotels, loadCurrentHotel, loadReviews, loadNearHotelComplete, setAuthInfoAction} from './action';
+import {requireAuthorization, requireLogout, loadHotels, loadCurrentHotel, loadReviews, loadNearHotelComplete, setAuthInfoAction, sendReviewStatus} from './action';
 import {saveToken, dropToken, Token} from '../components/services/token';
 import {toast} from 'react-toastify';
-import {APIRoute, AuthorizationStatus} from '../const';
+import {APIRoute, AuthorizationStatus, AUTH_FAIL_MESSAGE, ReviewPostStatus} from '../const';
 import {AuthData} from '../types/auth-data';
-import {OfferResponse, OfferReviewResponse} from '../types/offer';
+import {NewReview, OfferResponse, OfferReviewResponse} from '../types/offer';
 import {adaptAuthInfoToClient, adaptReviewToClient, offerAdapter} from '../adapter';
-
-const AUTH_FAIL_MESSAGE = 'Не забудьте авторизоваться';
 
 export const fetchHotelsAction = (): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
@@ -68,13 +66,24 @@ export const fetchReviewsAction = (id: string): ThunkActionResult =>
     const normalizedReviews = data.map((review: OfferReviewResponse) => (
       adaptReviewToClient(review)
     ));
-
     dispatch(loadReviews(normalizedReviews));
   };
 
-// export const sendReviewAction = (id: number, rating: string, comment }: ThunkActionResult =>
-//   async (dispatch, _getStore, api): Promise<void> => {
-//     await api.post<OfferReviewResponse>(`${APIRoute.Reviews}/${id}`, {rating, comment })
-//         dispatch(sendReview(true));
-//   };
-
+export const sendReviewAction = ({ comment, rating } : NewReview, id: string): ThunkActionResult =>
+  async (dispatch, _getStore, api) => {
+    dispatch(sendReviewStatus(ReviewPostStatus.Posting));
+    try {
+      const { data } = await api.post<OfferReviewResponse[]>(
+        `${APIRoute.Reviews}/${id}`,
+        { comment, rating },
+      );
+      const normalizedReviews = data.map((review) => (
+        adaptReviewToClient(review)
+      ));
+      dispatch(loadReviews(normalizedReviews));
+      dispatch(sendReviewStatus(ReviewPostStatus.Posted));
+    }
+    catch {
+      dispatch(sendReviewStatus(ReviewPostStatus.NotPosted));
+    }
+  };

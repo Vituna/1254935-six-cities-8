@@ -1,4 +1,4 @@
-import {MouseEvent, useState, useRef, useEffect} from 'react';
+import {useState, useRef, useEffect} from 'react';
 import {PlacesSortType} from '../../types/offer';
 
 type SortProps = {
@@ -18,15 +18,14 @@ function Sort(props: SortProps): JSX.Element {
     setOpenSort((prevState: boolean) => !prevState);
   };
 
-  const handleClick = (evt: MouseEvent<HTMLLIElement, globalThis.MouseEvent>, option: PlacesSortType) => {
+  const handleClick = (evt: React.MouseEvent<HTMLLIElement, globalThis.MouseEvent>, option: PlacesSortType) => {
     evt.preventDefault();
     onSortChange(option);
     handleSort();
   };
 
   useEffect(() => {
-    // Не знаю какой тип назнасить для evt, ставлю как выше или какой-нибудь другой то сразу ругается на handleOutsideClick
-    const handleOutsideClick = (evt: any) => {
+    const handleOutsideClick = (evt: MouseEvent) => {
       if (sortRef.current?.contains(evt.target as Node)) {
         return;
       }
@@ -39,7 +38,6 @@ function Sort(props: SortProps): JSX.Element {
       document.removeEventListener('click', handleOutsideClick);
     };
   }, []);
-
 
   return (
     <form className="places__sorting" action="#" method="get" ref={sortRef}>
