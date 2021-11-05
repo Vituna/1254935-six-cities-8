@@ -73,7 +73,6 @@ export type OfferReviews = {
   date: string,
 };
 
-
 export type CityLocation = {
     latitude: number,
     longitude: number,
@@ -98,7 +97,7 @@ export type OfferReviewResponse = Omit<OfferReviews, 'user'>
 }
 
 export type UseParamTypes = {
-  id: string;
+  id: number;
 }
 
 export type OfferResponse = Omit<

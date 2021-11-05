@@ -1,14 +1,14 @@
 import {useState, useRef, useEffect} from 'react';
-import {PlacesSortType} from '../../types/offer';
+import {PlacesSort} from '../../const';
+
 
 type SortProps = {
-  placesSort: PlacesSortType[];
-  typeSort: PlacesSortType;
-  onSortChange: (option: PlacesSortType) => void,
+  typeSort: string;
+  onSortChange: (option: string) => void,
 }
 
 function Sort(props: SortProps): JSX.Element {
-  const {placesSort, typeSort, onSortChange} = props;
+  const {typeSort, onSortChange} = props;
 
   const [isOpenSort, setOpenSort] = useState(false);
 
@@ -18,7 +18,7 @@ function Sort(props: SortProps): JSX.Element {
     setOpenSort((prevState: boolean) => !prevState);
   };
 
-  const handleClick = (evt: React.MouseEvent<HTMLLIElement, globalThis.MouseEvent>, option: PlacesSortType) => {
+  const handleClick = (evt: React.MouseEvent<HTMLLIElement, globalThis.MouseEvent>, option: string) => {
     evt.preventDefault();
     onSortChange(option);
     handleSort();
@@ -51,7 +51,7 @@ function Sort(props: SortProps): JSX.Element {
       <ul
         className={`places__options places__options--custom ${isOpenSort ? 'places__options--opened' : ''}`}
       >
-        {placesSort.map((option, i) => (
+        {PlacesSort.map((option, i) => (
           <li onClick={
             (evt) => {handleClick(evt, option);}
           } className="places__option" tabIndex={0} key={`${option + i}`}

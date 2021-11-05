@@ -1,50 +1,40 @@
 import { ChangeEvent, FormEvent, Fragment, useEffect, useState } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Ratings, ReviewPostStatus } from '../../const';
 import { sendReviewAction } from '../../store/api-actions';
-import { ThunkAppDispatch } from '../../types/action';
-import { NewReview } from '../../types/offer';
-import { Store } from '../../types/store';
+import { getReviewPostStatus } from '../../store/reviews-store/selectors';
 
 type ReviewFormProps = {
-  id: string,
+  id: number,
 }
 
-const mapStateToProps = ({ reviewPostStatus }: Store) => ({
-  isReviewPosting: reviewPostStatus === ReviewPostStatus.Posting,
-  isReviewPosted: reviewPostStatus === ReviewPostStatus.Posted,
-  isReviewNotPosted: reviewPostStatus === ReviewPostStatus.NotPosted,
-});
+function ReviewForm(props: ReviewFormProps): JSX.Element {
+  const { id  } = props;
 
-const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  sendReviews(reviewData: NewReview, id: string) {
-    dispatch(sendReviewAction(reviewData , id));
-  },
-});
+  const reviewPostStatus = useSelector(getReviewPostStatus);
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-type ConnectedComponentProps = PropsFromRedux & ReviewFormProps;
-
-function ReviewForm(props: ConnectedComponentProps): JSX.Element {
-  const { sendReviews, id , isReviewPosting, isReviewPosted, isReviewNotPosted } = props;
+  const [
+    isReviewPosting,
+    isReviewPosted,
+    isReviewNotPosted,
+  ] = [
+    reviewPostStatus === ReviewPostStatus.Posting,
+    reviewPostStatus === ReviewPostStatus.Posted,
+    reviewPostStatus === ReviewPostStatus.NotPosted,
+  ];
 
   const [comment, setСomment] = useState('');
   const [rating, setRating] = useState('');
 
+  const dispatch = useDispatch();
+
   const handleSubmitForm = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-
-    sendReviews({
-      comment: comment,
-      rating: Number(rating),
-    }, id);
+    dispatch(sendReviewAction({comment, rating: Number(rating)}, id));
   };
 
   const handleChangeText = (evt: ChangeEvent<HTMLTextAreaElement>) => {
     setСomment(evt.target.value);
-
   };
 
   const handleChangeRating = (evt: React.ChangeEvent<HTMLInputElement>): void => {
@@ -100,4 +90,4 @@ function ReviewForm(props: ConnectedComponentProps): JSX.Element {
 }
 
 export  {ReviewForm};
-export default connector(ReviewForm);
+export default ReviewForm;

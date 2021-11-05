@@ -4,7 +4,7 @@ export enum AuthorizationStatus {
   Unknown = 'UNKNOWN',
 }
 
-export const cities = [
+export const Cities = [
   'Paris',
   'Cologne',
   'Brussels',
@@ -19,7 +19,7 @@ export enum page {
   Near = 'near',
 }
 
-export const PlacesSort: any = [
+export const PlacesSort = [
   'Popular',
   'Price: low to high',
   'Price: high to low',
@@ -39,7 +39,8 @@ export enum APIRoute {
   Hotels = '/hotels',
   Login = '/login',
   Logout = '/logout',
-  Reviews = '/comments'
+  Reviews = '/comments',
+  Favorite = '/favorite',
 }
 
 export const EMAIL_VALID_REGEX =/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

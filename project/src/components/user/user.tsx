@@ -1,32 +1,21 @@
 import { Link } from 'react-router-dom';
-import {connect, ConnectedProps} from 'react-redux';
-import {ThunkAppDispatch} from '../../types/action';
+import {useDispatch, useSelector} from 'react-redux';
 import {logoutAction} from '../../store/api-actions';
-import {Store} from '../../types/store';
 
 import {AuthorizationStatus} from '../../const';
+import { getAuthInfo, getAuthorizationStatus, getCurrentEmail } from '../../store/auth-store/selectors';
 
-type UserProps = {
-  authorizationStatus: string;
-}
+function User(): JSX.Element {
 
-const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  logoutGame() {
+  const currentEmail = useSelector(getCurrentEmail);
+  const authInfo = useSelector(getAuthInfo);
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+
+  const dispatch = useDispatch();
+
+  const logoutGame = () => {
     dispatch(logoutAction());
-  },
-});
-
-const mapStateToProps = ({ currentEmail, authInfo }: Store) => (
-  { currentEmail, authInfo }
-);
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-type ConnectedComponentProps = PropsFromRedux & UserProps;
-
-function User(props: ConnectedComponentProps): JSX.Element {
-  const {authorizationStatus, logoutGame, currentEmail, authInfo} = props;
+  };
 
   return (
     <nav className="header__nav">
@@ -35,8 +24,7 @@ function User(props: ConnectedComponentProps): JSX.Element {
           <>
             <li className="header__nav-item user">
               <Link className="header__nav-link header__nav-link--profile" to="/favorites">
-                <div className="header__avatar-wrapper user__avatar-wrapper">
-                </div>
+                <img className="header__avatar-wrapper user__avatar-wrapper" src={authInfo.avatarUrl} alt="avatar" />
                 <span className="header__user-name user__name">{currentEmail || authInfo.email}</span>
               </Link>
             </li>
@@ -64,4 +52,4 @@ function User(props: ConnectedComponentProps): JSX.Element {
 }
 
 export {User};
-export default connector(User);
+export default User;

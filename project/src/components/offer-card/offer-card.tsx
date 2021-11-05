@@ -1,22 +1,38 @@
 import {Link} from 'react-router-dom';
-import {useState, MouseEvent} from 'react';
+import {MouseEvent, useState} from 'react';
 
-import {OfferCardType} from '../../types/offer';
+import {Offer} from '../../types/offer';
 
 import {page} from '../../const';
+import { sendFavoriteAction } from '../../store/api-actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFavoriteHotelItems } from '../../store/favorite-store/selectors';
 
-interface OfferCardProps extends OfferCardType {
+interface OfferCardProps {
   cardType: string;
+  offer: Offer;
   onListItemHover: ((listItemName: string) => void)
   onListItemLeave: (() => void)
 }
 
 function OfferCard(props: OfferCardProps): JSX.Element {
-  const {id, type, title, price, rating, isPremium, isFavorite, previewImage, cardType, onListItemHover, onListItemLeave} = props;
+  const {cardType, offer, onListItemHover, onListItemLeave} = props;
+  const {id, type, title, price, rating, isPremium, previewImage} = offer;
 
-  const [isActiveFavorite, setActiveFavorite] = useState(isFavorite);
+  const dispatch = useDispatch();
+  const isFavoriteStatus = useSelector(getFavoriteHotelItems);
 
-  const handleSort = (): void => {
+  const isFavorites = !isFavoriteStatus.find((films) => films.id === id);
+
+
+  const handleScrollTop = (): void => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const [isActiveFavorite, setActiveFavorite] = useState(isFavorites);
+
+  const handleChangeFavorite = (): void => {
+    dispatch(sendFavoriteAction(offer));
     setActiveFavorite(!isActiveFavorite);
   };
 
@@ -47,7 +63,7 @@ function OfferCard(props: OfferCardProps): JSX.Element {
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <button className={!isActiveFavorite ? 'place-card__bookmark-button button' : 'place-card__bookmark-button button place-card__bookmark-button--active'} type="button" onClick={handleSort} >
+          <button className={isActiveFavorite ? 'place-card__bookmark-button button' : 'place-card__bookmark-button button place-card__bookmark-button--active'} type="button" onClick={handleChangeFavorite} >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark" ></use>
             </svg>
@@ -61,7 +77,7 @@ function OfferCard(props: OfferCardProps): JSX.Element {
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`/offer/${id}`}>
+          <Link to={`/offer/${id}`} onClick={handleScrollTop}>
             {title}
           </Link>
         </h2>

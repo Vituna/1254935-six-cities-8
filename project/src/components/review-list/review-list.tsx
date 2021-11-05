@@ -2,15 +2,22 @@ import {OfferReview} from '../../types/offer';
 import ReviewForm from '../review-form/review-form';
 import ReviewItem from '../review-item/review-item';
 import {AuthorizationStatus} from '../../const';
+import { useMemo } from 'react';
 
 type ReviewListProps = {
   review: OfferReview[];
   authorizationStatus: string;
-  id: string;
+  id: number;
 }
 
 function ReviewList(props: ReviewListProps): JSX.Element {
   const {review, authorizationStatus, id} = props;
+
+  const reviewsToDisplay = useMemo(() =>
+    [...review]
+      .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+      .slice(0, 10),
+  [review]);
 
   return (
     <section className="property__reviews reviews">
@@ -18,7 +25,7 @@ function ReviewList(props: ReviewListProps): JSX.Element {
         Reviews &middot; <span className="reviews__amount">{review.length}</span>
       </h2>
       <ul className="reviews__list">
-        {review.map((comment) => <ReviewItem {...comment} key={comment.id} />)}
+        {reviewsToDisplay.map((comment) => <ReviewItem {...comment} key={comment.id} />)}
       </ul>
       {authorizationStatus === AuthorizationStatus.Auth &&
         <ReviewForm id={id} />}

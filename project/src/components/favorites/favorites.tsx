@@ -4,23 +4,44 @@ import OfferCard from '../offer-card/offer-card';
 import {Offer} from '../../types/offer';
 
 import {page} from '../../const';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFavoriteHotelItems } from '../../store/favorite-store/selectors';
+import { useEffect } from 'react';
+import { loadFavoriteAction } from '../../store/api-actions';
 
 type FavoritesProps = {
-  offers: Offer[];
-  authorizationStatus: string;
   onListItemHover: (listItemName: string) => void;
   onListItemLeave: () => void;
 }
 
-function Favorites(props: FavoritesProps): JSX.Element {
-  const {offers, authorizationStatus, onListItemHover, onListItemLeave} = props;
+type GrouppedOffers = Record<string, Offer[]>
 
-  const favoriteOffers = offers.filter((offer) => offer.isFavorite);
+function Favorites(props: FavoritesProps): JSX.Element {
+  const {onListItemHover, onListItemLeave} = props;
+
+  const favoriteHotelItems = useSelector(getFavoriteHotelItems);
+
+  const favoriteOffers = favoriteHotelItems.filter((offer) => offer.isFavorite);
+
+  const groupedFavoriteOffers = favoriteOffers.reduce<GrouppedOffers>((res, offer) => {
+    const { name } = offer.city;
+    if (!Object.keys(res).includes(name)) {
+      res[name] = [];
+    }
+    res[name].push(offer);
+    return res;
+  }, {});
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loadFavoriteAction());
+  }, [dispatch]);
 
   return (
     <div className="page">
 
-      <Header authorizationStatus={authorizationStatus}/>
+      <Header />
 
       {(favoriteOffers.length === 0) ? (
         <main className="page__main page__main--favorites page__main--favorites-empty">
@@ -40,20 +61,23 @@ function Favorites(props: FavoritesProps): JSX.Element {
             <section className="favorites">
               <h1 className="favorites__title">Saved listing</h1>
               <ul className="favorites__list">
-                <li className="favorites__locations-items">
-                  <div className="favorites__locations locations locations--current">
-                    <div className="locations__item">
-                      <a className="locations__item-link" href="/">
-                        <span>Amsterdam</span>
-                      </a>
+                {Object.entries(groupedFavoriteOffers).map(([cityName, cityOffers]) => (
+                  <li className="favorites__locations-items" key={cityName}>
+                    <div className="favorites__locations locations locations--current">
+                      <div className="locations__item">
+                        <a className="locations__item-link" href="/">
+                          <span>{cityName}</span>
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                  <div className="favorites__places">
-                    {offers.map((offer) => (
-                      <OfferCard {...offer} key={offer.id}  cardType={page.Favorites} onListItemHover={onListItemHover}  onListItemLeave={onListItemLeave}/>
-                    ))}
-                  </div>
-                </li>
+                    <div className="favorites__places">
+                      {cityOffers.map((offer: Offer) => (
+                        <OfferCard offer={offer} key={offer.id}  cardType={page.Favorites} onListItemHover={onListItemHover}  onListItemLeave={onListItemLeave}/>
+                      ))}
+                    </div>
+                  </li>
+                ))}
+
               </ul>
             </section>
           </div>

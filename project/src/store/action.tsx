@@ -1,5 +1,5 @@
-import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction, LoadCurrentHotelAction, LoadCurrentOfferErrorAction, LoadNearHotelCompleteAction, SendReviewStatusAction} from '../types/action';
-import {Offer, OfferReview, PlacesSortType, UserInfo} from '../types/offer';
+import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction, LoadCurrentHotelAction, LoadCurrentHotelErrorAction, LoadNearHotelCompleteAction, SendReviewStatusAction, SetFavoriteHotelsAction, UpdateHotelAction} from '../types/action';
+import {Offer, OfferReview, UserInfo} from '../types/offer';
 import {AuthorizationStatus, ReviewPostStatus} from '../const';
 
 export const changeCurrentCity = (currentCity: string): ChangeCurrentCityAction => ({
@@ -7,7 +7,7 @@ export const changeCurrentCity = (currentCity: string): ChangeCurrentCityAction 
   payload: currentCity,
 });
 
-export const changePlacesSort = (typeSort: PlacesSortType): ChangePlacesSortAction => ({
+export const changePlacesSort = (typeSort: string): ChangePlacesSortAction => ({
   type: ActionType.ChangeSort,
   payload: typeSort,
 });
@@ -42,13 +42,12 @@ export const loadNearHotelComplete = (nearbyOffers: Offer[]): LoadNearHotelCompl
   payload: nearbyOffers,
 });
 
-export const loadCurrentOfferError = (): LoadCurrentOfferErrorAction => ({
-  type: ActionType.LoadCurrentOfferError,
+export const loadCurrentHotelError = (): LoadCurrentHotelErrorAction => ({
+  type: ActionType.LoadCurrentHotelError,
 });
 
-export const loadOffersStart = (isOffersLoaded: boolean): LoadOffersStart => ({
+export const loadOffersStart = (): LoadOffersStart => ({
   type: ActionType.LoadOffersStart,
-  payload: isOffersLoaded,
 });
 
 export const changeCurrentEmail = (currentEmail: string): ChangeCurrentEmailAction => ({
@@ -65,3 +64,14 @@ export const sendReviewStatus = (reviewPostStatus: ReviewPostStatus): SendReview
   type: ActionType.SendReviewStatus,
   payload: reviewPostStatus,
 });
+
+export const setFavoriteHotelsAction = (favoritesHotels: Offer[]): SetFavoriteHotelsAction => ({
+  type: ActionType.SetFavoriteHotels,
+  payload: favoritesHotels,
+});
+
+export const updateHotelAction = (hotel: Offer): UpdateHotelAction => ({
+  type: ActionType.UpdateHotel,
+  payload: hotel,
+});
+

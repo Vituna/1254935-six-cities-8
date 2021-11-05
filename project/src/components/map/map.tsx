@@ -11,6 +11,8 @@ type MapProps = {
   mapSize: string;
   focusedCard?: Offer | undefined;
   zoomOnOffer?: boolean,
+  scrolling?: boolean;
+
 }
 
 const defaultCustomIcon = new leaflet.Icon({
@@ -27,7 +29,7 @@ const currentCustomIcon = new leaflet.Icon({
 
 function MapSity(props: MapProps): JSX.Element {
 
-  const {offers, mapSize, focusedCard, zoomOnOffer = true} = props;
+  const {offers, mapSize, focusedCard, zoomOnOffer = true, scrolling} = props;
 
   const mapRef = useRef(null);
 
@@ -47,6 +49,7 @@ function MapSity(props: MapProps): JSX.Element {
     const map = new Map(mapRef.current, {
       center: [latitude, longitude],
       zoom: zoom,
+      scrollWheelZoom: !scrolling,
     });
 
     map.addLayer(new TileLayer(
@@ -56,7 +59,7 @@ function MapSity(props: MapProps): JSX.Element {
       },
     ));
     setMapInstance(map);
-  }, [city, mapRef, mapInstance]);
+  }, [mapInstance, city, scrolling]);
 
   const renderOffersPins = useCallback(() => {
     if (!mapInstance) {

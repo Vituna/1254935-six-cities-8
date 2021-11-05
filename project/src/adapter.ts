@@ -14,7 +14,7 @@ export const offerAdapter = (hotel: OfferResponse): Offer => ({
   goods: hotel.goods,
   host: {
     id: hotel.host.id,
-    name: hotel.host.avatar_url,
+    name: hotel.host.name,
     avatarUrl: hotel.host.avatar_url,
     isPro: hotel.host.is_pro,
   },
