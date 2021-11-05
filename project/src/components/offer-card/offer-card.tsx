@@ -3,10 +3,11 @@ import {MouseEvent, useState} from 'react';
 
 import {Offer} from '../../types/offer';
 
-import {page} from '../../const';
 import { sendFavoriteAction } from '../../store/api-actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFavoriteHotelItems } from '../../store/favorite-store/selectors';
+import { page } from '../../const';
+
 
 interface OfferCardProps {
   cardType: string;
@@ -23,7 +24,6 @@ function OfferCard(props: OfferCardProps): JSX.Element {
   const isFavoriteStatus = useSelector(getFavoriteHotelItems);
 
   const isFavorites = !isFavoriteStatus.find((films) => films.id === id);
-
 
   const handleScrollTop = (): void => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

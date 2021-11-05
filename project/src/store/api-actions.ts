@@ -102,13 +102,17 @@ export const loadFavoriteAction = (): ThunkActionResult =>
     dispatch(setFavoriteHotelsAction(adaptedData));
   };
 
+
 export const sendFavoriteAction = (hotel: Offer): ThunkActionResult =>
-  async function (dispatch, _getState, api): Promise<void> {
+  async function (dispatch, getState, api): Promise<void> {
     const currentHotel = hotel;
     const isFavorite = currentHotel?.isFavorite;
 
+    // const authorizationStatus = getState().authInfo;
+    // console.log(authorizationStatus);
+
     // if (authorizationStatus === AuthorizationStatus.NoAuth) {
-    //   dispatch(redirectToRouteAction(AppRoutes.Login));
+    //   dispatch(redirectToRouteAction(APIRoute.Login));
     //   return;
     // }
 

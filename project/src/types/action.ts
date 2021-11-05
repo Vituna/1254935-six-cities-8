@@ -3,7 +3,7 @@ import { requireAuthorization, requireLogout, setAuthInfoAction } from '../store
 import {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import {AxiosInstance} from 'axios';
 import {Store} from '../types/store';
-import { ReviewPostStatus } from '../const';
+import { APIRoute, ReviewPostStatus } from '../const';
 
 export const enum ActionType {
   ChangeCity = 'app/changeCity',
@@ -14,6 +14,7 @@ export const enum ActionType {
   RequireAuthorization = 'user/requireAuthorization',
   SetAuthInfo = 'user/setAuthInfo',
   RequireLogout = 'user/requireLogout',
+  RedirectToRoute = 'user/redirectToRoute',
 
   LoadHotels = 'data/loadHotels',
   LoadCurrentHotel = 'data/loadCurrentHotel',
@@ -97,9 +98,14 @@ export type UpdateHotelAction =  ({
   payload: Offer,
 });
 
+export type RedirectToRouteAction =({
+  type: ActionType.RedirectToRoute,
+  payload: APIRoute,
+});
+
 
 export type Actions = ChangeCurrentCityAction | ChangeOffersAction | ChangePlacesSortAction | ReturnType<typeof requireAuthorization> | ReturnType<typeof requireLogout> | ReturnType<typeof setAuthInfoAction> |
-LoadOffersAction | LoadOffersStart | ChangeCurrentEmailAction | LoadReviewsAction | LoadCurrentHotelAction | LoadCurrentHotelErrorAction | LoadNearHotelCompleteAction | SendReview | SendReviewStatusAction | SetFavoriteHotelsAction | UpdateHotelAction;
+LoadOffersAction | LoadOffersStart | ChangeCurrentEmailAction | LoadReviewsAction | LoadCurrentHotelAction | LoadCurrentHotelErrorAction | LoadNearHotelCompleteAction | SendReview | SendReviewStatusAction | SetFavoriteHotelsAction | UpdateHotelAction | RedirectToRouteAction;
 
 export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, Store, AxiosInstance, Actions>;
 

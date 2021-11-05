@@ -2,7 +2,7 @@ import OfferCard from '../offer-card/offer-card';
 import {Offer} from '../../types/offer';
 import MainEmpty from '../main-empty/main-empty';
 
-import {MapSize, page} from '../../const';
+import {page} from '../../const';
 import Sort from '../sort/sort';
 import Map from '../map/map';
 import { useSelector } from 'react-redux';
@@ -63,7 +63,7 @@ function CardsList(props: CardsProps): JSX.Element {
             <div className="cities__right-section">
               <section className="cities__map map">
 
-                <Map offers={offers} mapSize={MapSize.MapHeightOffer} focusedCard={focusedCard} />
+                <Map offers={offers} focusedCard={focusedCard} />
 
               </section>
             </div>

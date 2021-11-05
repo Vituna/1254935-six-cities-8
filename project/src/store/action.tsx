@@ -1,6 +1,6 @@
-import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction, LoadCurrentHotelAction, LoadCurrentHotelErrorAction, LoadNearHotelCompleteAction, SendReviewStatusAction, SetFavoriteHotelsAction, UpdateHotelAction} from '../types/action';
+import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction, LoadCurrentHotelAction, LoadCurrentHotelErrorAction, LoadNearHotelCompleteAction, SendReviewStatusAction, SetFavoriteHotelsAction, UpdateHotelAction, RedirectToRouteAction} from '../types/action';
 import {Offer, OfferReview, UserInfo} from '../types/offer';
-import {AuthorizationStatus, ReviewPostStatus} from '../const';
+import {APIRoute, AuthorizationStatus, ReviewPostStatus} from '../const';
 
 export const changeCurrentCity = (currentCity: string): ChangeCurrentCityAction => ({
   type: ActionType.ChangeCity,
@@ -75,3 +75,7 @@ export const updateHotelAction = (hotel: Offer): UpdateHotelAction => ({
   payload: hotel,
 });
 
+export const redirectToRouteAction = (url: APIRoute): RedirectToRouteAction => ({
+  type: ActionType.RedirectToRoute,
+  payload: url,
+});

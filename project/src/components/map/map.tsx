@@ -8,7 +8,6 @@ import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
 
 type MapProps = {
   offers: Offer[];
-  mapSize: string;
   focusedCard?: Offer | undefined;
   zoomOnOffer?: boolean,
   scrolling?: boolean;
@@ -17,19 +16,19 @@ type MapProps = {
 
 const defaultCustomIcon = new leaflet.Icon({
   iconUrl: URL_MARKER_DEFAULT,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconSize: [27, 39],
+  iconAnchor: [20, 39],
 });
 
 const currentCustomIcon = new leaflet.Icon({
   iconUrl: URL_MARKER_CURRENT,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconSize: [27, 39],
+  iconAnchor: [20, 39],
 });
 
 function MapSity(props: MapProps): JSX.Element {
 
-  const {offers, mapSize, focusedCard, zoomOnOffer = true, scrolling} = props;
+  const {offers, focusedCard, zoomOnOffer = true, scrolling} = props;
 
   const mapRef = useRef(null);
 
@@ -95,7 +94,7 @@ function MapSity(props: MapProps): JSX.Element {
 
   return (
     <div
-      style={{ height: mapSize}}
+      style={{ height: '100%'}}
       ref={mapRef}
     >
     </div>);

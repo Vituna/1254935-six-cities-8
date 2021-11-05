@@ -5,7 +5,7 @@ import Header from '../header/header';
 import OfferCard from '../offer-card/offer-card';
 import ReviewList from '../review-list/review-list';
 import Map from '../map/map';
-import {page, MapSize} from '../../const';
+import {page} from '../../const';
 import { fetchCurrentHotelAction, fetchReviewsAction, fetchNearHotelAction, sendFavoriteAction } from '../../store/api-actions';
 import { getCurrentHotel, getIsLoadCurrentHotelError, getNearHotel } from '../../store/offer-store/selectors';
 import { getReviews } from '../../store/reviews-store/selectors';
@@ -84,7 +84,7 @@ function Property(props: PropertyProps): JSX.Element {
                   <h1 className="property__name">
                     {offer.title}
                   </h1>
-                  <button className={`property__bookmark-button button ${ !isActiveFavorite || isFavorites ? 'property__bookmark-button--active' : ''}`} onClick={handleChangeFavorite}  type="button" >
+                  <button className={`property__bookmark-button button ${ !isActiveFavorite ? 'property__bookmark-button--active' : ''}`} onClick={handleChangeFavorite}  type="button" >
                     <svg className="property__bookmark-icon" width="31" height="33">
                       <use xlinkHref="#icon-bookmark"></use>
                     </svg>
@@ -155,7 +155,7 @@ function Property(props: PropertyProps): JSX.Element {
             </div>
             <section className="property__map map">
 
-              <Map offers={offers} mapSize={MapSize.MapHeightOffer} focusedCard={offer} zoomOnOffer={false} scrolling/>
+              <Map offers={offers} focusedCard={offer} zoomOnOffer={false} scrolling/>
 
             </section>
           </section>
