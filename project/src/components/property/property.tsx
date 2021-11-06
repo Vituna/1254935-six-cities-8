@@ -1,39 +1,35 @@
-import {useParams} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {useEffect, useMemo, useState} from 'react';
-import Header from '../header/header';
-import OfferCard from '../offer-card/offer-card';
-import ReviewList from '../review-list/review-list';
-import Map from '../map/map';
-import {page} from '../../const';
+import { useEffect, useMemo } from 'react';
 import { fetchCurrentHotelAction, fetchReviewsAction, fetchNearHotelAction, sendFavoriteAction } from '../../store/api-actions';
 import { getCurrentHotel, getIsLoadCurrentHotelError, getNearHotel } from '../../store/offer-store/selectors';
 import { getReviews } from '../../store/reviews-store/selectors';
 import { getAuthorizationStatus } from '../../store/auth-store/selectors';
+import { updateCurrentOffer, updateNearbyOffers } from '../../store/action';
+
+import { Offer } from '../../types/offer';
+
+import Header from '../header/header';
+import OfferCard from '../offer-card/offer-card';
+import ReviewList from '../review-list/review-list';
+import Map from '../map/map';
 import NoFound from '../no-found/no-found';
-import { getFavoriteHotelItems } from '../../store/favorite-store/selectors';
 
-type PropertyProps = {
-  onListItemHover: (listItemName: string) => void;
-  onListItemLeave: () => void;
-}
+import { page } from '../../const';
+import { getRating } from '../../utils';
 
-function Property(props: PropertyProps): JSX.Element {
+function Property(): JSX.Element {
+
+  const dispatch = useDispatch();
+
   const { id } = useParams<{ id: string & number}>();
-
-  const {onListItemHover, onListItemLeave} = props;
 
   const offer = useSelector(getCurrentHotel);
   const reviews = useSelector(getReviews);
   const nearHotel = useSelector(getNearHotel);
   const authorizationStatus = useSelector(getAuthorizationStatus);
   const isLoadCurrentHotelError = useSelector(getIsLoadCurrentHotelError);
-  const isFavoriteStatus = useSelector(getFavoriteHotelItems);
 
-  const isFavorites = !isFavoriteStatus.find((films) => films.id === id);
-
-
-  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchReviewsAction(id));
     dispatch(fetchCurrentHotelAction(id));
@@ -47,13 +43,23 @@ function Property(props: PropertyProps): JSX.Element {
     return [...nearHotel, offer];
   }, [offer, nearHotel]);
 
-  const [isActiveFavorite, setActiveFavorite] = useState(isFavorites);
-
-  const handleChangeFavorite = (): void => {
-    if (offer !== null) {
-      dispatch(sendFavoriteAction(offer));
+  const handleOfferFavoriteClick = () => {
+    if (offer) {
+      dispatch(sendFavoriteAction(
+        offer,
+        (updatedOffer) => {
+          dispatch(updateCurrentOffer(updatedOffer));
+        },
+      ));
     }
-    setActiveFavorite(!isActiveFavorite);
+  };
+
+  const handleChangeFavorite = (currentOffer: Offer): void => {
+    dispatch(sendFavoriteAction(currentOffer,
+      (updatedOffer) => {
+        dispatch(updateNearbyOffers(updatedOffer));
+      },
+    ));
   };
 
   return (
@@ -84,7 +90,7 @@ function Property(props: PropertyProps): JSX.Element {
                   <h1 className="property__name">
                     {offer.title}
                   </h1>
-                  <button className={`property__bookmark-button button ${ !isActiveFavorite ? 'property__bookmark-button--active' : ''}`} onClick={handleChangeFavorite}  type="button" >
+                  <button className={`property__bookmark-button button ${ offer.isFavorite ? 'property__bookmark-button--active' : ''}`} onClick={handleOfferFavoriteClick}  type="button" >
                     <svg className="property__bookmark-icon" width="31" height="33">
                       <use xlinkHref="#icon-bookmark"></use>
                     </svg>
@@ -93,7 +99,7 @@ function Property(props: PropertyProps): JSX.Element {
                 </div>
                 <div className="property__rating rating">
                   <div className="property__stars rating__stars">
-                    <span style={{width: `${offer.rating / 5 * 100}%`}}></span>
+                    <span style={{width: `${getRating(offer.rating)}%`}}></span>
                     <span className="visually-hidden">Rating</span>
                   </div>
                   <span className="property__rating-value rating__value">{offer.rating}</span>
@@ -164,7 +170,7 @@ function Property(props: PropertyProps): JSX.Element {
               <h2 className="near-places__title">Other places in the neighbourhood</h2>
               <div className="near-places__list places__list">
                 {nearHotel.map((near) => (
-                  <OfferCard offer={near} key={near.id} cardType={page.Near} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave}/>
+                  <OfferCard offer={near} key={near.id} cardType={page.Near} onFavoriteClick={handleChangeFavorite} />
                 ))}
               </div>
             </section>

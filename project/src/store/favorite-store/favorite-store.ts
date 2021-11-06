@@ -12,6 +12,16 @@ export const favoriteReducer = (state = initialState, action: Actions): Favorite
         ...state,
         favoritesHotels: action.payload,
       };
+    case ActionType.UpdateFavoriteOffers:
+      return {
+        ...state,
+        favoritesHotels: state.favoritesHotels.map((offer) => {
+          if (offer.id !== action.payload.id) {
+            return offer;
+          }
+          return action.payload;
+        }),
+      };
 
     default:
       return state;

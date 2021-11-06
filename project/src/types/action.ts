@@ -1,8 +1,11 @@
-import {Offer, OfferReview} from './offer';
-import { requireAuthorization, requireLogout, setAuthInfoAction } from '../store/action';
 import {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import {AxiosInstance} from 'axios';
+import { requireAuthorization, requireLogout, setAuthInfoAction } from '../store/action';
+
 import {Store} from '../types/store';
+
+import {Offer, OfferReview} from './offer';
+
 import { APIRoute, ReviewPostStatus } from '../const';
 
 export const enum ActionType {
@@ -27,12 +30,21 @@ export const enum ActionType {
   UpdateHotel = 'data/updateHotel',
   FetchFavoriteHotels = 'data/fetchFavoriteHotels',
   SetFavoriteHotels = 'data/setFavoriteHotels',
+  UpdateFavoriteOffers = 'data/updateFavoriteOffers',
+  UpdateCurrentOffer = 'data/updateCurrentOffer',
+  UpdateNearbyOffers = 'data/updateNearbyOffers',
+
 }
 
 export type ChangeCurrentCityAction = {
   type: ActionType.ChangeCity;
   payload: string;
 };
+
+export type UpdateCurrentOfferAction = {
+  type: ActionType.UpdateCurrentOffer,
+  payload: Offer,
+}
 
 export type ChangeCurrentEmailAction = {
   type: ActionType.ChangeEmail;
@@ -93,6 +105,11 @@ export type SetFavoriteHotelsAction = ({
   payload: Offer[],
 });
 
+export type UpdateFavoriteOffersAction = {
+  type: ActionType.UpdateFavoriteOffers,
+  payload: Offer,
+}
+
 export type UpdateHotelAction =  ({
   type: ActionType.UpdateHotel,
   payload: Offer,
@@ -103,9 +120,13 @@ export type RedirectToRouteAction =({
   payload: APIRoute,
 });
 
+export type UpdateNearbyOffersAction = {
+  type: ActionType.UpdateNearbyOffers,
+  payload: Offer,
+}
 
 export type Actions = ChangeCurrentCityAction | ChangeOffersAction | ChangePlacesSortAction | ReturnType<typeof requireAuthorization> | ReturnType<typeof requireLogout> | ReturnType<typeof setAuthInfoAction> |
-LoadOffersAction | LoadOffersStart | ChangeCurrentEmailAction | LoadReviewsAction | LoadCurrentHotelAction | LoadCurrentHotelErrorAction | LoadNearHotelCompleteAction | SendReview | SendReviewStatusAction | SetFavoriteHotelsAction | UpdateHotelAction | RedirectToRouteAction;
+LoadOffersAction | LoadOffersStart | ChangeCurrentEmailAction | LoadReviewsAction | LoadCurrentHotelAction | LoadCurrentHotelErrorAction | LoadNearHotelCompleteAction | SendReview | SendReviewStatusAction | SetFavoriteHotelsAction | UpdateHotelAction | RedirectToRouteAction | UpdateCurrentOfferAction | UpdateFavoriteOffersAction | UpdateNearbyOffersAction;
 
 export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, Store, AxiosInstance, Actions>;
 

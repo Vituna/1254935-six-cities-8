@@ -1,63 +1,76 @@
-import {FormEvent, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {loginAction} from '../../store/api-actions';
-import Logo from '../logo/logo';
-import {changeCurrentEmail} from '../../store/action';
-import {AuthorizationStatus, EMAIL_VALIDATION_MESSAGE, EMAIL_VALID_REGEX, PASSWORD_VALIDATION_MESSAGE, PASSWORD_VALID_REGEX} from '../../const';
-import { Redirect } from 'react-router-dom';
+import { FormEvent, useRef } from 'react';
+import { Link, Redirect } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginAction } from '../../store/api-actions';
+import { changeCurrentCity, changeCurrentEmail } from '../../store/action';
 import { getAuthorizationStatus } from '../../store/auth-store/selectors';
 
-const isEmailValid = (email: string) => EMAIL_VALID_REGEX.test(String(email).toLowerCase());
-const isPasswordValid = (password: string) => PASSWORD_VALID_REGEX.test(String(password).toLowerCase());
+import { City } from '../../types/offer';
+
+import Logo from '../logo/logo';
+
+import { getRandomCity, isEmailValid, isPasswordValid } from '../../utils';
+import { APIRoute, AuthorizationStatus, Cities, EMAIL_VALIDATION_MESSAGE, PASSWORD_VALIDATION_MESSAGE } from '../../const';
+
+
+const citiesList = Object.values(Cities);
+const randomCity = getRandomCity(citiesList);
 
 function SignIn(): JSX.Element {
 
-  const authorizationStatus = useSelector(getAuthorizationStatus);
   const dispatch = useDispatch();
 
-  const [emailValue, setEmailValue] = useState<string>('');
-  const [passwordValue, setPasswordValue] = useState<string>('');
+  const authorizationStatus = useSelector(getAuthorizationStatus);
 
-  const handleChangeEmail = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const email = evt?.currentTarget?.value;
-    const emailInput = evt?.target;
+  const loginRef = useRef<HTMLInputElement | null>(null);
 
-    if (!isEmailValid(email)) {
-      emailInput.setCustomValidity(EMAIL_VALIDATION_MESSAGE);
-    } else {
-      emailInput.setCustomValidity('');
-    }
+  const passwordRef = useRef<HTMLInputElement | null>(null);
 
-    emailInput.reportValidity();
-    setEmailValue(email);
+  if (authorizationStatus === AuthorizationStatus.Auth) {
+    return <Redirect to={APIRoute.Main} />;
+  }
+
+  const handleCityLinkClick = (city: City) => {
+    dispatch(changeCurrentCity(city));
   };
 
-  const handleChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const password = e?.currentTarget?.value;
-    const passwordInput = e?.target;
+  const handleChangeEmail = () => {
+    if (loginRef.current !== null) {
+      const email = loginRef.current.value;
+      const emailInput = loginRef.current;
 
-    if (!isPasswordValid(password)) {
-      passwordInput.setCustomValidity(PASSWORD_VALIDATION_MESSAGE);
-    } else {
-      passwordInput.setCustomValidity('');
+      if (!isEmailValid(email)) {
+        emailInput.setCustomValidity(EMAIL_VALIDATION_MESSAGE);
+      } else {
+        emailInput.setCustomValidity('');
+      }
+      emailInput.reportValidity();
     }
+  };
 
-    passwordInput.reportValidity();
-    setPasswordValue(password);
+  const handleValidityInput = () => {
+    if (passwordRef.current !== null) {
+      const password = passwordRef.current.value;
+      const passwordInput = passwordRef.current;
+
+      if (!isPasswordValid(password)) {
+        passwordInput.setCustomValidity(PASSWORD_VALIDATION_MESSAGE);
+      } else {
+        passwordInput.setCustomValidity('');
+      }
+      passwordInput.reportValidity();
+    }
+    handleChangeEmail();
   };
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
-    if (emailValue !== null && passwordValue !== null) {
-      dispatch(loginAction({login: emailValue, password: passwordValue}));
-      dispatch(changeCurrentEmail(emailValue));
+    if (loginRef.current !== null && passwordRef.current !== null) {
+      dispatch(loginAction({login: loginRef.current.value, password: passwordRef.current.value}));
+      dispatch(changeCurrentEmail(loginRef.current.value));
     }
   };
-
-  if (authorizationStatus === AuthorizationStatus.Auth) {
-    return <Redirect to={'/'} />;
-  }
 
   return (
     <div className="page page--gray page--login">
@@ -77,16 +90,16 @@ function SignIn(): JSX.Element {
         <div className="page__login-container container">
           <section className="login">
             <h1 className="login__title">Sign in</h1>
-            <form onSubmit={handleSubmit} className="login__form form" action="#" method="post" >
+            <form onSubmit={handleSubmit} onChange={handleValidityInput} className="login__form form" action="#" method="post" >
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
 
-                <input value={emailValue} onChange={handleChangeEmail} className="login__input form__input" type="email" name="email" placeholder="Email" id="name" required/>
+                <input ref={loginRef} className="login__input form__input" type="email" name="email" placeholder="Email" id="name" required/>
 
               </div>
               <div className="login__input-wrapper form__input-wraFpper">
                 <label className="visually-hidden">Password</label>
-                <input value={passwordValue} onChange={handleChangePassword} className="login__input form__input" type="password" name="password" placeholder="Password"  id="password" required/>
+                <input ref={passwordRef} className="login__input form__input" type="password" name="password" placeholder="Password"  id="password" required/>
               </div>
               <button className="login__submit form__submit button" type="submit" >Sign in</button>
             </form>
@@ -94,9 +107,15 @@ function SignIn(): JSX.Element {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <a className="locations__item-link" href="/">
-                <span>Amsterdam</span>
-              </a>
+              <Link
+                onClick={() => {
+                  handleCityLinkClick(randomCity);
+                }}
+                className="locations__item-link"
+                to={APIRoute.Main}
+              >
+                <span>{randomCity}</span>
+              </Link>
             </div>
           </section>
         </div>

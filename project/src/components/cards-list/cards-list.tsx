@@ -1,27 +1,32 @@
-import OfferCard from '../offer-card/offer-card';
-import {Offer} from '../../types/offer';
-import MainEmpty from '../main-empty/main-empty';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { getTypeSort } from '../../store/menu-store/selectors';
+import { sendFavoriteAction } from '../../store/api-actions';
 
-import {page} from '../../const';
+import { Offer } from '../../types/offer';
+
+import OfferCard from '../offer-card/offer-card';
 import Sort from '../sort/sort';
 import Map from '../map/map';
-import { useSelector } from 'react-redux';
-import { getTypeSort } from '../../store/menu-store/selectors';
+import MainEmpty from '../main-empty/main-empty';
+
+import { page } from '../../const';
 
 type CardsProps = {
   offers: Offer[];
   currentCity: string;
   noOffers: boolean;
-  onListItemHover: (listItemName: string) => void;
-  onListItemLeave: () => void;
   onSortChange: (option: string) => void,
-  focusedCard?: Offer | undefined;
 }
 
 function CardsList(props: CardsProps): JSX.Element {
-  const {offers, currentCity, focusedCard, noOffers, onListItemHover, onListItemLeave, onSortChange} = props;
+  const {offers, currentCity, noOffers, onSortChange} = props;
+
+  const dispatch = useDispatch();
 
   const typeSort = useSelector(getTypeSort);
+
+  const [focusedCard, setFocusedCard] = useState<Offer | null>(null);
 
   const sortLowHigh = [...offers].sort((a, b): number => a.price - b.price);
   const sortHighLow = [...offers].sort((a, b): number => b.price - a.price);
@@ -40,6 +45,18 @@ function CardsList(props: CardsProps): JSX.Element {
     return [...offers];
   };
 
+  const onListItemHover = (offer: Offer) => {
+    setFocusedCard(offer);
+  };
+
+  const onListItemLeave = () => {
+    setFocusedCard(null);
+  };
+
+  const handleChangeFavorite = (offer: Offer): void => {
+    dispatch(sendFavoriteAction(offer));
+  };
+
   return (
     <div className="cities">
       <div className={`cities__places-container container ${noOffers ? 'cities__places-container--empty' : ''}`}>
@@ -55,7 +72,7 @@ function CardsList(props: CardsProps): JSX.Element {
               <div className="cities__places-list places__list tabs__content">
 
                 {getSortOffers().map((offer: Offer) =>
-                  (<OfferCard key={offer.id} offer={offer} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave} cardType={page.Offer} />),
+                  (<OfferCard key={offer.id} offer={offer} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave} onFavoriteClick={handleChangeFavorite} cardType={page.Offer} />),
                 )}
 
               </div>
@@ -63,7 +80,7 @@ function CardsList(props: CardsProps): JSX.Element {
             <div className="cities__right-section">
               <section className="cities__map map">
 
-                <Map offers={offers} focusedCard={focusedCard} />
+                <Map offers={getSortOffers()} focusedCard={focusedCard} />
 
               </section>
             </div>
@@ -75,3 +92,4 @@ function CardsList(props: CardsProps): JSX.Element {
 }
 
 export default CardsList;
+

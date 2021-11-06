@@ -1,11 +1,13 @@
-import {ThunkActionResult} from '../types/action';
-import {requireAuthorization, requireLogout, loadHotels, loadCurrentHotel, loadReviews, loadNearHotelComplete, setAuthInfoAction, sendReviewStatus, loadOffersStart, loadCurrentHotelError, setFavoriteHotelsAction, updateHotelAction} from './action';
-import {saveToken, dropToken, Token} from '../components/services/token';
 import {toast} from 'react-toastify';
-import {APIRoute, AuthorizationStatus, AUTH_FAIL_MESSAGE, ReviewPostStatus} from '../const';
+import {requireAuthorization, requireLogout, loadHotels, loadCurrentHotel, loadReviews, loadNearHotelComplete, setAuthInfoAction, sendReviewStatus, loadOffersStart, loadCurrentHotelError, setFavoriteHotelsAction, updateHotelAction, redirectToRoute} from './action';
 import {AuthData} from '../types/auth-data';
 import {NewReview, Offer, OfferResponse, OfferReviewResponse} from '../types/offer';
+import {ThunkActionResult} from '../types/action';
+
+import {saveToken, dropToken, Token} from '../components/services/token';
 import {adaptAuthInfoToClient, adaptReviewToClient, offerAdapter} from '../adapter';
+
+import {APIRoute, AuthorizationStatus, AUTH_FAIL_MESSAGE, ReviewPostStatus} from '../const';
 
 export const fetchHotelsAction = (): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
@@ -103,23 +105,21 @@ export const loadFavoriteAction = (): ThunkActionResult =>
   };
 
 
-export const sendFavoriteAction = (hotel: Offer): ThunkActionResult =>
-  async function (dispatch, getState, api): Promise<void> {
-    const currentHotel = hotel;
-    const isFavorite = currentHotel?.isFavorite;
+export const sendFavoriteAction = (hotel: Offer, onComplete?: (updatedOffer: Offer) => void): ThunkActionResult =>
+  async function (dispatch, _getState, api): Promise<void> {
+    try {
+      const currentHotel = hotel;
+      const isFavorite = currentHotel?.isFavorite;
 
-    // const authorizationStatus = getState().authInfo;
-    // console.log(authorizationStatus);
+      const { data } = await api.post<OfferResponse>(
+        `${APIRoute.Favorite}/${currentHotel.id}/${isFavorite ? '0' : '1'}`,
+      );
+      const newHotel = offerAdapter(data);
 
-    // if (authorizationStatus === AuthorizationStatus.NoAuth) {
-    //   dispatch(redirectToRouteAction(APIRoute.Login));
-    //   return;
-    // }
-
-    const { data } = await api.post<OfferResponse>(
-      `${APIRoute.Favorite}/${currentHotel.id}/${isFavorite ? '0' : '1'}`,
-    );
-    const newHotel = offerAdapter(data);
-
-    dispatch(updateHotelAction(newHotel));
+      dispatch(updateHotelAction(newHotel));
+      onComplete && onComplete(newHotel);
+    }
+    catch {
+      dispatch(redirectToRoute(APIRoute.Login));
+    }
   };

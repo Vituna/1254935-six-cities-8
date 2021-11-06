@@ -11,11 +11,13 @@ export const menuReducer = (state = initialState, action: Actions): MenuStore =>
   switch (action.type) {
     case ActionType.ChangeCity:
       return {
-        ...state, currentCity: action.payload,
+        ...state,
+        currentCity: action.payload,
       };
     case ActionType.ChangeSort:
       return {
-        ...state, typeSort: action.payload,
+        ...state,
+        typeSort: action.payload,
       };
     default:
       return state;

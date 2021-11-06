@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
-import {Route, Redirect} from 'react-router-dom';
-import {RouteProps} from 'react-router-dom';
-import {History} from 'history';
-
-import {AuthorizationStatus} from '../../const';
+import { Route, Redirect } from 'react-router-dom';
+import { RouteProps } from 'react-router-dom';
+import { History } from 'history';
 import { getAuthorizationStatus } from '../../store/auth-store/selectors';
+
+import { APIRoute, AuthorizationStatus } from '../../const';
 
 type RenderFuncProps = {
   history: History<unknown>;
@@ -26,7 +26,7 @@ function PrivateRoute(props: PrivateRouteProps): JSX.Element {
       render={(routeProps) => (
         authorizationStatus === AuthorizationStatus.Auth
           ? render(routeProps)
-          : <Redirect to={'/login'} />
+          : <Redirect to={APIRoute.Login} />
       )}
     />
   );

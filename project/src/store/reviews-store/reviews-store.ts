@@ -1,6 +1,7 @@
-import { ReviewPostStatus } from '../../const';
 import { Actions, ActionType } from '../../types/action';
 import { ReviewsStore } from '../../types/store';
+
+import { ReviewPostStatus } from '../../const';
 
 const initialState: ReviewsStore = {
   reviews: [],
@@ -11,7 +12,8 @@ export const reviewsReducer = (state = initialState, action: Actions): ReviewsSt
   switch (action.type) {
     case ActionType.LoadReviews:
       return {
-        ...state, reviews: action.payload,
+        ...state,
+        reviews: action.payload,
       };
     case ActionType.SendReviewStatus:
       return {

@@ -1,29 +1,21 @@
 import { useSelector, useDispatch } from 'react-redux';
-import {changeCurrentCity, changePlacesSort} from '../../store/action';
+import { changeCurrentCity, changePlacesSort } from '../../store/action';
+import { getCurrentCity } from '../../store/menu-store/selectors';
+import { getHotels, getIsOffersLoading } from '../../store/offer-store/selectors';
 
 import Header from '../header/header';
 import LocationsItem from '../locations-item/locations-item';
 import CardsList from '../cards-list/cards-list';
 import Preloader from '../loading-screen/loading-screen';
 
-import {Offer} from '../../types/offer';
-import { getCurrentCity } from '../../store/menu-store/selectors';
-import { getHotels, getIsOffersLoading } from '../../store/offer-store/selectors';
+function Main(): JSX.Element {
 
-type MainScreenProps = {
-  onListItemHover: (listItemName: string) => void;
-  onListItemLeave: () => void;
-  focusedCard?: Offer | undefined;
-}
-
-function Main(props: MainScreenProps): JSX.Element {
-  const {focusedCard,  onListItemHover, onListItemLeave} = props;
+  const dispatch = useDispatch();
 
   const currentCity = useSelector(getCurrentCity);
   const offers = useSelector(getHotels);
   const isOffersLoading = useSelector(getIsOffersLoading);
 
-  const dispatch = useDispatch();
   const onCityChange = (city: string) => {
     dispatch(changeCurrentCity(city));
   };
@@ -45,7 +37,7 @@ function Main(props: MainScreenProps): JSX.Element {
         <LocationsItem currentCity={currentCity} onCityChange={onCityChange} />
 
         {isOffersLoading ? (<Preloader />) : (
-          <CardsList offers={cityOffers} currentCity={currentCity} focusedCard={focusedCard} noOffers={noOffers} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave} onSortChange={onSortChange} />
+          <CardsList offers={cityOffers} currentCity={currentCity} noOffers={noOffers} onSortChange={onSortChange} />
         )}
 
       </main>

@@ -1,3 +1,12 @@
+export const BACKEND_URL = 'https://8.react.pages.academy/six-cities';
+export const REQUEST_TIMEOUT = 5000;
+
+export enum HttpCode {
+  Unauthorized = 401,
+}
+
+export const AUTH_TOKEN_KEY_NAME = 'six-cities-token';
+
 export enum AuthorizationStatus {
   Auth = 'AUTH',
   NoAuth = 'NO_AUTH',
@@ -36,6 +45,7 @@ export enum MapSize {
 }
 
 export enum APIRoute {
+  Main = '/',
   Hotels = '/hotels',
   Login = '/login',
   Logout = '/logout',
@@ -47,6 +57,7 @@ export const EMAIL_VALID_REGEX =/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]
 export const PASSWORD_VALID_REGEX = /^(?:[0-9]+[a-z]|[a-z]+[0-9])[a-z0-9]*$/i;
 export const EMAIL_VALIDATION_MESSAGE = 'Please enter a valid email address.';
 export const PASSWORD_VALIDATION_MESSAGE = 'Please enter a valid password.';
+export const PASSWORD_SPACE_MESSAGE = 'Password must not contain a space';
 export const AUTH_USER_ERROR_MESSAGE = 'User authorization error';
 export const FETCH_OFFERS_ERROR_MESSAGE = 'Error loading available offers';
 

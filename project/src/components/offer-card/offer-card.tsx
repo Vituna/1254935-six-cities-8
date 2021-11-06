@@ -1,53 +1,41 @@
-import {Link} from 'react-router-dom';
-import {MouseEvent, useState} from 'react';
+import { Link } from 'react-router-dom';
 
-import {Offer} from '../../types/offer';
+import { Offer } from '../../types/offer';
 
-import { sendFavoriteAction } from '../../store/api-actions';
-import { useDispatch, useSelector } from 'react-redux';
-import { getFavoriteHotelItems } from '../../store/favorite-store/selectors';
 import { page } from '../../const';
+import { getRating } from '../../utils';
 
-
-interface OfferCardProps {
+type OfferCardProps = {
   cardType: string;
   offer: Offer;
-  onListItemHover: ((listItemName: string) => void)
-  onListItemLeave: (() => void)
+  onListItemHover?: ((offer: Offer) => void)
+  onListItemLeave?: (() => void)
+  onFavoriteClick?: (offer: Offer) => void,
 }
 
 function OfferCard(props: OfferCardProps): JSX.Element {
-  const {cardType, offer, onListItemHover, onListItemLeave} = props;
-  const {id, type, title, price, rating, isPremium, previewImage} = offer;
+  const {cardType, offer, onListItemHover, onListItemLeave, onFavoriteClick} = props;
+  const {id, type, title, price, rating, isFavorite, isPremium, previewImage} = offer;
 
-  const dispatch = useDispatch();
-  const isFavoriteStatus = useSelector(getFavoriteHotelItems);
-
-  const isFavorites = !isFavoriteStatus.find((films) => films.id === id);
+  const isOffercardType: boolean = cardType === page.Offer;
+  const isFavoriteCardType: boolean = cardType === page.Favorites;
+  const isNearCardType: boolean = cardType === page.Near;
 
   const handleScrollTop = (): void => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const [isActiveFavorite, setActiveFavorite] = useState(isFavorites);
-
-  const handleChangeFavorite = (): void => {
-    dispatch(sendFavoriteAction(offer));
-    setActiveFavorite(!isActiveFavorite);
+  const handleFavoriteClick = () => {
+    onFavoriteClick && onFavoriteClick(offer);
   };
 
-  const handleHoverCard = (event: MouseEvent<HTMLLIElement>) => {
-    event.preventDefault();
-    onListItemHover(title);
+  const handleHoverCard = () => {
+    onListItemHover && onListItemHover(offer);
   };
 
   const handleLeaveCard = () => {
-    onListItemLeave();
+    onListItemLeave && onListItemLeave();
   };
-
-  const isOffercardType: boolean = cardType === page.Offer;
-  const isFavoriteCardType: boolean = cardType === page.Favorites;
-  const isNearCardType: boolean = cardType === page.Near;
 
   return (
     <article className={`place-card ${isFavoriteCardType && 'favorites__card'} ${isOffercardType && 'cities__place-card'} ${isNearCardType && 'near-places__card'}`} onMouseEnter={handleHoverCard} onMouseLeave={handleLeaveCard}>
@@ -63,7 +51,7 @@ function OfferCard(props: OfferCardProps): JSX.Element {
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <button className={isActiveFavorite ? 'place-card__bookmark-button button' : 'place-card__bookmark-button button place-card__bookmark-button--active'} type="button" onClick={handleChangeFavorite} >
+          <button className={!isFavorite ? 'place-card__bookmark-button button' : 'place-card__bookmark-button button place-card__bookmark-button--active'} type="button" onClick={handleFavoriteClick} >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark" ></use>
             </svg>
@@ -72,7 +60,7 @@ function OfferCard(props: OfferCardProps): JSX.Element {
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{width: `${rating / 5 * 100}%`}}></span>
+            <span style={{width: `${getRating(rating)}%`}}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>

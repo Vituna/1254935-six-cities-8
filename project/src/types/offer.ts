@@ -138,3 +138,12 @@ export type UserInfoResponse = Omit<UserInfo, 'avatarUrl' | 'isPro'> & {
  'avatar_url': string,
  'is_pro': boolean,
 };
+
+export enum City {
+  Paris = 'Paris',
+  Cologne = 'Cologne',
+  Brussels = 'Brussels',
+  Amsterdam = 'Amsterdam',
+  Hamburg = 'Hamburg',
+  Dusseldorf = 'Dusseldorf',
+}

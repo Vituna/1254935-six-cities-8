@@ -1,17 +1,16 @@
-import {useRef, useEffect, useMemo, useState, useCallback} from 'react';
+import { useRef, useEffect, useMemo, useState, useCallback } from 'react';
 import leaflet, { Map, LayerGroup, TileLayer } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import {Offer} from '../../types/offer';
+import { Offer } from '../../types/offer';
 
-import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
+import { URL_MARKER_DEFAULT, URL_MARKER_CURRENT } from '../../const';
 
 type MapProps = {
   offers: Offer[];
-  focusedCard?: Offer | undefined;
+  focusedCard?: Offer | null;
   zoomOnOffer?: boolean,
   scrolling?: boolean;
-
 }
 
 const defaultCustomIcon = new leaflet.Icon({
@@ -77,7 +76,7 @@ function MapSity(props: MapProps): JSX.Element {
         lng: offer.location.longitude,
       });
 
-      const isActive = focusedCard && offer.title === focusedCard.title;
+      const isActive = focusedCard && offer.id === focusedCard.id;
 
       pin.setIcon(isActive ? currentCustomIcon : defaultCustomIcon)
         .addTo(pinsGroupRef.current);

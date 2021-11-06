@@ -1,4 +1,4 @@
-import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction, LoadCurrentHotelAction, LoadCurrentHotelErrorAction, LoadNearHotelCompleteAction, SendReviewStatusAction, SetFavoriteHotelsAction, UpdateHotelAction, RedirectToRouteAction} from '../types/action';
+import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction, LoadCurrentHotelAction, LoadCurrentHotelErrorAction, LoadNearHotelCompleteAction, SendReviewStatusAction, SetFavoriteHotelsAction, UpdateHotelAction, RedirectToRouteAction, UpdateCurrentOfferAction, UpdateFavoriteOffersAction, UpdateNearbyOffersAction} from '../types/action';
 import {Offer, OfferReview, UserInfo} from '../types/offer';
 import {APIRoute, AuthorizationStatus, ReviewPostStatus} from '../const';
 
@@ -46,6 +46,16 @@ export const loadCurrentHotelError = (): LoadCurrentHotelErrorAction => ({
   type: ActionType.LoadCurrentHotelError,
 });
 
+export const updateCurrentOffer = (offer: Offer): UpdateCurrentOfferAction => ({
+  type: ActionType.UpdateCurrentOffer,
+  payload: offer,
+});
+
+export const updateNearbyOffers = (offer: Offer): UpdateNearbyOffersAction => ({
+  type: ActionType.UpdateNearbyOffers,
+  payload: offer,
+});
+
 export const loadOffersStart = (): LoadOffersStart => ({
   type: ActionType.LoadOffersStart,
 });
@@ -70,12 +80,17 @@ export const setFavoriteHotelsAction = (favoritesHotels: Offer[]): SetFavoriteHo
   payload: favoritesHotels,
 });
 
+export const updateFavoriteOffers = (offer: Offer): UpdateFavoriteOffersAction => ({
+  type: ActionType.UpdateFavoriteOffers,
+  payload: offer,
+});
+
 export const updateHotelAction = (hotel: Offer): UpdateHotelAction => ({
   type: ActionType.UpdateHotel,
   payload: hotel,
 });
 
-export const redirectToRouteAction = (url: APIRoute): RedirectToRouteAction => ({
+export const redirectToRoute = (url: APIRoute): RedirectToRouteAction => ({
   type: ActionType.RedirectToRoute,
   payload: url,
 });

@@ -1,8 +1,10 @@
 import { ChangeEvent, FormEvent, Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Ratings, ReviewPostStatus } from '../../const';
 import { sendReviewAction } from '../../store/api-actions';
 import { getReviewPostStatus } from '../../store/reviews-store/selectors';
+
+import { Ratings, ReviewPostStatus } from '../../const';
+import { getFormValid } from '../../utils';
 
 type ReviewFormProps = {
   id: number,
@@ -10,6 +12,8 @@ type ReviewFormProps = {
 
 function ReviewForm(props: ReviewFormProps): JSX.Element {
   const { id  } = props;
+
+  const dispatch = useDispatch();
 
   const reviewPostStatus = useSelector(getReviewPostStatus);
 
@@ -23,10 +27,15 @@ function ReviewForm(props: ReviewFormProps): JSX.Element {
     reviewPostStatus === ReviewPostStatus.NotPosted,
   ];
 
+  useEffect(() => {
+    if (isReviewPosted) {
+      setRating('');
+      setСomment('');
+    }
+  }, [isReviewPosted]);
+
   const [comment, setСomment] = useState('');
   const [rating, setRating] = useState('');
-
-  const dispatch = useDispatch();
 
   const handleSubmitForm = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -40,15 +49,6 @@ function ReviewForm(props: ReviewFormProps): JSX.Element {
   const handleChangeRating = (evt: React.ChangeEvent<HTMLInputElement>): void => {
     setRating(evt.target.value);
   };
-
-  useEffect(() => {
-    if (isReviewPosted) {
-      setRating('');
-      setСomment('');
-    }
-  }, [isReviewPosted]);
-
-  const isFormValid = comment.length > 60 && Boolean(rating);
 
   return (
     <form className="reviews__form form" action="#" method="post" onSubmit={handleSubmitForm} >
@@ -76,7 +76,7 @@ function ReviewForm(props: ReviewFormProps): JSX.Element {
           and describe your stay with at least
           <b className="reviews__text-amount">50 characters</b>.
         </p>
-        <button className="reviews__submit form__submit button" type="submit" disabled={!isFormValid || isReviewPosting}>
+        <button className="reviews__submit form__submit button" type="submit" disabled={!getFormValid(comment.length, rating) || isReviewPosting}>
           Submit
         </button>
       </div>

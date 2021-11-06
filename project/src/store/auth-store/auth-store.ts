@@ -1,6 +1,7 @@
-import { AuthorizationStatus } from '../../const';
 import { Actions, ActionType } from '../../types/action';
 import { AuthStore } from '../../types/store';
+
+import { AuthorizationStatus } from '../../const';
 
 const initialState: AuthStore = {
   currentEmail: '',
@@ -21,7 +22,8 @@ export const authReducer = (state = initialState, action: Actions): AuthStore =>
       };
     case ActionType.RequireLogout:
       return {
-        ...state, authorizationStatus: AuthorizationStatus.NoAuth,
+        ...state,
+        authorizationStatus: AuthorizationStatus.NoAuth,
       };
     case ActionType.SetAuthInfo: {
       const userData = action.payload;

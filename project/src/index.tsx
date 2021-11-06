@@ -14,6 +14,7 @@ import {checkAuthAction, fetchHotelsAction} from './store/api-actions';
 import {ThunkAppDispatch} from './types/action';
 import {AuthorizationStatus} from './const';
 import { rootReducer } from './store/root-reducer';
+import { redirect } from './store/middlewares/redirect';
 
 
 const api = createAPI(
@@ -24,6 +25,7 @@ export const store = createStore(
   rootReducer,
   composeWithDevTools(
     applyMiddleware(thunk.withExtraArgument(api)),
+    applyMiddleware(redirect),
   ),
 );
 

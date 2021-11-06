@@ -1,6 +1,6 @@
 import {useState, useRef, useEffect} from 'react';
-import {PlacesSort} from '../../const';
 
+import {PlacesSort} from '../../const';
 
 type SortProps = {
   typeSort: string;

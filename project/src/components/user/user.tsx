@@ -1,19 +1,21 @@
 import { Link } from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
-import {logoutAction} from '../../store/api-actions';
-
-import {AuthorizationStatus} from '../../const';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutAction } from '../../store/api-actions';
 import { getAuthInfo, getAuthorizationStatus, getCurrentEmail } from '../../store/auth-store/selectors';
 
+import { APIRoute, AuthorizationStatus } from '../../const';
+
 function User(): JSX.Element {
+
+  const dispatch = useDispatch();
 
   const currentEmail = useSelector(getCurrentEmail);
   const authInfo = useSelector(getAuthInfo);
   const authorizationStatus = useSelector(getAuthorizationStatus);
 
-  const dispatch = useDispatch();
 
-  const logoutGame = () => {
+  const handleLogOutClick = (evt: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    evt.preventDefault();
     dispatch(logoutAction());
   };
 
@@ -23,18 +25,14 @@ function User(): JSX.Element {
         {AuthorizationStatus.Auth === authorizationStatus ? (
           <>
             <li className="header__nav-item user">
-              <Link className="header__nav-link header__nav-link--profile" to="/favorites">
-                <img className="header__avatar-wrapper user__avatar-wrapper" src={authInfo.avatarUrl} alt="avatar" />
+              <Link className="header__nav-link header__nav-link--profile" to={APIRoute.Favorite}>
+                <div className="header__avatar-wrapper user__avatar-wrapper">
+                </div>
                 <span className="header__user-name user__name">{currentEmail || authInfo.email}</span>
               </Link>
             </li>
-            <li className="header__nav-item" onClick={(evt) => {
-              evt.preventDefault();
-
-              logoutGame();
-            }}
-            >
-              <Link className="header__nav-link" to="/login">
+            <li className="header__nav-item" >
+              <Link className="header__nav-link" onClick={handleLogOutClick} to="/login">
                 <span className="header__signout">Sign out</span>
               </Link>
             </li>

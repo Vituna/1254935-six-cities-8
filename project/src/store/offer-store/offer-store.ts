@@ -7,30 +7,60 @@ const initialState: OfferStore = {
   nearHotel: [],
   isOffersLoading: false,
   isLoadCurrentHotelError: false,
-
 };
 
 export const offerReducer = (state = initialState, action: Actions): OfferStore => {
   switch (action.type) {
     case ActionType.LoadCurrentHotel:
       return {
-        ...state, currentHotel: action.payload,
+        ...state,
+        currentHotel: action.payload,
       };
     case ActionType.LoadHotels:
       return {
-        ...state, hotels: action.payload, isOffersLoading: false,
+        ...state,
+        hotels: action.payload,
+        isOffersLoading: false,
       };
     case ActionType.LoadNearHotelComplete:
       return {
-        ...state, nearHotel: action.payload,
+        ...state,
+        nearHotel: action.payload,
       };
     case ActionType.LoadOffersStart:
       return {
-        ...state, isOffersLoading: true,
+        ...state,
+        isOffersLoading: true,
       };
     case ActionType.LoadCurrentHotelError:
       return {
-        ...state, isLoadCurrentHotelError: true,
+        ...state,
+        isLoadCurrentHotelError: true,
+      };
+    case ActionType.UpdateCurrentOffer:
+      return {
+        ...state,
+        currentHotel: action.payload,
+      };
+    case ActionType.UpdateNearbyOffers:
+      return {
+        ...state,
+        nearHotel: state.nearHotel.map((offer) => {
+          if (offer.id !== action.payload.id) {
+            return offer;
+          }
+          return action.payload;
+        }),
+      };
+    case ActionType.UpdateHotel:
+      return {
+        ...state,
+        hotels: state.hotels.map((offer) => {
+          if (offer.id !== action.payload.id) {
+            return offer;
+          }
+          return action.payload;
+        }),
       };
 
     default:

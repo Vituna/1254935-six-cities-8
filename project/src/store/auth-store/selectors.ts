@@ -1,6 +1,7 @@
-import { AuthorizationStatus } from '../../const';
 import { Data, Stores } from '../../types/store';
 import { StoreNameSpace } from '../root-reducer';
+
+import { AuthorizationStatus } from '../../const';
 
 export const getAuthorizationStatus = (store: Stores): AuthorizationStatus =>
   store[StoreNameSpace.auth].authorizationStatus;

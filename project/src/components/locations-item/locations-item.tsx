@@ -1,4 +1,4 @@
-import {Cities} from '../../const';
+import { Cities } from '../../const';
 
 type LocationsItemProps = {
   currentCity: string,

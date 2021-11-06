@@ -1,8 +1,11 @@
-import {OfferReview} from '../../types/offer';
+import { useMemo } from 'react';
+
+import { OfferReview } from '../../types/offer';
+
 import ReviewForm from '../review-form/review-form';
 import ReviewItem from '../review-item/review-item';
-import {AuthorizationStatus} from '../../const';
-import { useMemo } from 'react';
+
+import { AuthorizationStatus } from '../../const';
 
 type ReviewListProps = {
   review: OfferReview[];

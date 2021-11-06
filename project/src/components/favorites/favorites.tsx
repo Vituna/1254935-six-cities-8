@@ -1,23 +1,22 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getFavoriteHotelItems } from '../../store/favorite-store/selectors';
+import { loadFavoriteAction, sendFavoriteAction } from '../../store/api-actions';
+import { updateFavoriteOffers } from '../../store/action';
+
+import { Offer } from '../../types/offer';
+
 import Header from '../header/header';
 import Logo from '../logo/logo';
 import OfferCard from '../offer-card/offer-card';
-import {Offer} from '../../types/offer';
 
-import {page} from '../../const';
-import { useDispatch, useSelector } from 'react-redux';
-import { getFavoriteHotelItems } from '../../store/favorite-store/selectors';
-import { useEffect } from 'react';
-import { loadFavoriteAction } from '../../store/api-actions';
-
-type FavoritesProps = {
-  onListItemHover: (listItemName: string) => void;
-  onListItemLeave: () => void;
-}
+import { page } from '../../const';
 
 type GrouppedOffers = Record<string, Offer[]>
 
-function Favorites(props: FavoritesProps): JSX.Element {
-  const {onListItemHover, onListItemLeave} = props;
+function Favorites(): JSX.Element {
+
+  const dispatch = useDispatch();
 
   const favoriteHotelItems = useSelector(getFavoriteHotelItems);
 
@@ -32,11 +31,16 @@ function Favorites(props: FavoritesProps): JSX.Element {
     return res;
   }, {});
 
-  const dispatch = useDispatch();
+  const handleFavoriteClick = (currentOffer: Offer) => {
+    dispatch(sendFavoriteAction(currentOffer,
+      (updatedOffer) => {
+        dispatch(updateFavoriteOffers(updatedOffer));
+      },
+    ));
+  };
 
   useEffect(() => {
     dispatch(loadFavoriteAction());
-
   }, [dispatch]);
   dispatch(loadFavoriteAction());
 
@@ -74,7 +78,7 @@ function Favorites(props: FavoritesProps): JSX.Element {
                     </div>
                     <div className="favorites__places">
                       {cityOffers.map((offer: Offer) => (
-                        <OfferCard offer={offer} key={offer.id}  cardType={page.Favorites} onListItemHover={onListItemHover}  onListItemLeave={onListItemLeave}/>
+                        <OfferCard offer={offer} key={offer.id} cardType={page.Favorites} onFavoriteClick={handleFavoriteClick} />
                       ))}
                     </div>
                   </li>
