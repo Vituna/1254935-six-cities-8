@@ -6,6 +6,7 @@ import {ThunkActionResult} from '../types/action';
 
 import {saveToken, dropToken, Token} from '../components/services/token';
 import {adaptAuthInfoToClient, adaptReviewToClient, offerAdapter} from '../adapter';
+import browserHistory from '../browser-history';
 
 import {APIRoute, AuthorizationStatus, AUTH_FAIL_MESSAGE, ReviewPostStatus} from '../const';
 
@@ -59,6 +60,7 @@ export const loginAction = ({login: email, password}: AuthData): ThunkActionResu
     const {data: {token}} = await api.post<{token: Token}>(APIRoute.Login, {email, password});
     saveToken(token);
     dispatch(requireAuthorization(AuthorizationStatus.Auth));
+    browserHistory.go(0);
   };
 
 export const logoutAction = (): ThunkActionResult =>
@@ -66,6 +68,7 @@ export const logoutAction = (): ThunkActionResult =>
     api.delete(APIRoute.Logout);
     dropToken();
     dispatch(requireLogout());
+    browserHistory.go(0);
   };
 
 export const fetchReviewsAction = (id: number): ThunkActionResult =>
@@ -121,5 +124,6 @@ export const sendFavoriteAction = (hotel: Offer, onComplete?: (updatedOffer: Off
     }
     catch {
       dispatch(redirectToRoute(APIRoute.Login));
+      browserHistory.go(0);
     }
   };

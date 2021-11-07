@@ -1,12 +1,13 @@
 import { FormEvent, useRef } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginAction } from '../../store/api-actions';
-import { changeCurrentCity, changeCurrentEmail } from '../../store/action';
+import { changeCurrentCity, changeCurrentEmail, redirectToRoute } from '../../store/action';
 import { getAuthorizationStatus } from '../../store/auth-store/selectors';
 
 import { City } from '../../types/offer';
 
+import browserHistory from '../../browser-history';
 import Logo from '../logo/logo';
 
 import { getRandomCity, isEmailValid, isPasswordValid } from '../../utils';
@@ -27,7 +28,8 @@ function SignIn(): JSX.Element {
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
   if (authorizationStatus === AuthorizationStatus.Auth) {
-    return <Redirect to={APIRoute.Main} />;
+    dispatch(redirectToRoute(APIRoute.Main));
+    browserHistory.go(0);
   }
 
   const handleCityLinkClick = (city: City) => {

@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getFavoriteHotelItems } from '../../store/favorite-store/selectors';
 import { loadFavoriteAction, sendFavoriteAction } from '../../store/api-actions';
-import { updateFavoriteOffers } from '../../store/action';
+import { changeCurrentCity, updateFavoriteOffers } from '../../store/action';
 
 import { Offer } from '../../types/offer';
 
@@ -10,7 +11,7 @@ import Header from '../header/header';
 import Logo from '../logo/logo';
 import OfferCard from '../offer-card/offer-card';
 
-import { page } from '../../const';
+import { APIRoute, page } from '../../const';
 
 type GrouppedOffers = Record<string, Offer[]>
 
@@ -37,6 +38,10 @@ function Favorites(): JSX.Element {
         dispatch(updateFavoriteOffers(updatedOffer));
       },
     ));
+  };
+
+  const handleCityLinkClick = (city: string) => {
+    dispatch(changeCurrentCity(city));
   };
 
   useEffect(() => {
@@ -71,9 +76,9 @@ function Favorites(): JSX.Element {
                   <li className="favorites__locations-items" key={cityName}>
                     <div className="favorites__locations locations locations--current">
                       <div className="locations__item">
-                        <a className="locations__item-link" href="/">
+                        <Link className="locations__item-link" onClick={() => { handleCityLinkClick(cityName);}} to={APIRoute.Main}>
                           <span>{cityName}</span>
-                        </a>
+                        </Link>
                       </div>
                     </div>
                     <div className="favorites__places">
