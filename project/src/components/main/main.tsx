@@ -32,7 +32,7 @@ function Main(): JSX.Element {
 
       <Header />
 
-      <main className={`'page__main ' ${noOffers ? 'page__main--index-empty' : 'page__main--index'}`}>
+      <main className={`page__main ${noOffers ? 'page__main--index-empty' : 'page__main--index'}`}>
 
         <LocationsItem currentCity={currentCity} onCityChange={onCityChange} />
 

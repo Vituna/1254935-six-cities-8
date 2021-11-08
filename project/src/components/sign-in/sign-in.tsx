@@ -5,8 +5,6 @@ import { loginAction } from '../../store/api-actions';
 import { changeCurrentCity, changeCurrentEmail, redirectToRoute } from '../../store/action';
 import { getAuthorizationStatus } from '../../store/auth-store/selectors';
 
-import { City } from '../../types/offer';
-
 import browserHistory from '../../browser-history';
 import Logo from '../logo/logo';
 
@@ -32,7 +30,7 @@ function SignIn(): JSX.Element {
     browserHistory.go(0);
   }
 
-  const handleCityLinkClick = (city: City) => {
+  const handleCityLinkClick = (city: string) => {
     dispatch(changeCurrentCity(city));
   };
 
@@ -110,9 +108,7 @@ function SignIn(): JSX.Element {
           <section className="locations locations--login locations--current">
             <div className="locations__item">
               <Link
-                onClick={() => {
-                  handleCityLinkClick(randomCity);
-                }}
+                onClick={() => handleCityLinkClick(randomCity)}
                 className="locations__item-link"
                 to={APIRoute.Main}
               >

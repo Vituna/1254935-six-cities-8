@@ -1,4 +1,6 @@
-import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction, LoadCurrentHotelAction, LoadCurrentHotelErrorAction, LoadNearHotelCompleteAction, SendReviewStatusAction, SetFavoriteHotelsAction, UpdateHotelAction, RedirectToRouteAction, UpdateCurrentOfferAction, UpdateFavoriteOffersAction, UpdateNearbyOffersAction} from '../types/action';
+import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction,
+  LoadCurrentHotelAction, LoadCurrentHotelErrorAction, LoadNearHotelCompleteAction, SendReviewStatusAction, SetFavoriteHotelsAction, UpdateHotelAction,
+  RedirectToRouteAction, UpdateCurrentOfferAction, UpdateFavoriteOffersAction, UpdateNearbyOffersAction, RequireAuthorizationAction, SetAuthInfoAction, RequireLogoutAction} from '../types/action';
 import {Offer, OfferReview, UserInfo} from '../types/offer';
 import {APIRoute, AuthorizationStatus, ReviewPostStatus} from '../const';
 
@@ -12,20 +14,20 @@ export const changePlacesSort = (typeSort: string): ChangePlacesSortAction => ({
   payload: typeSort,
 });
 
-export const requireAuthorization = (authInfo: AuthorizationStatus) => ({
+export const requireAuthorization = (authInfo: AuthorizationStatus): RequireAuthorizationAction => ({
   type: ActionType.RequireAuthorization,
   payload: authInfo,
-} as const);
+});
 
-export const setAuthInfoAction = (authInfo: UserInfo) =>
+export const setAuthInfoAction = (authInfo: UserInfo): SetAuthInfoAction =>
   ({
     type: ActionType.SetAuthInfo,
     payload: authInfo,
-  } as const);
+  });
 
-export const requireLogout = () => ({
+export const requireLogout = (): RequireLogoutAction => ({
   type: ActionType.RequireLogout,
-} as const);
+});
 
 export const loadHotels = (hotels: Offer[]): LoadOffersAction => ({
   type: ActionType.LoadHotels,

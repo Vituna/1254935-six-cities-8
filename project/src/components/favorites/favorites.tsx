@@ -76,7 +76,7 @@ function Favorites(): JSX.Element {
                   <li className="favorites__locations-items" key={cityName}>
                     <div className="favorites__locations locations locations--current">
                       <div className="locations__item">
-                        <Link className="locations__item-link" onClick={() => { handleCityLinkClick(cityName);}} to={APIRoute.Main}>
+                        <Link className="locations__item-link" onClick={() => handleCityLinkClick(cityName)} to={APIRoute.Main}>
                           <span>{cityName}</span>
                         </Link>
                       </div>

@@ -8,6 +8,11 @@ type LocationsItemProps = {
 function LocationsItem(props: LocationsItemProps): JSX.Element {
   const {currentCity, onCityChange} = props;
 
+  const handleCityChange = (evt: React.MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>, city: string) => {
+    evt.preventDefault();
+    onCityChange(city);
+  };
+
   return (
     <>
       <h1 className="visually-hidden">Cities</h1>
@@ -16,7 +21,11 @@ function LocationsItem(props: LocationsItemProps): JSX.Element {
           <ul className="locations__list tabs__list">
             {Cities.map((city, i) => (
               <li className="locations__item" key={`${city + i}`}>
-                <a onClick={(evt) => { evt.preventDefault(); onCityChange(city); } } className={`locations__item-link tabs__item ${currentCity === city ? 'tabs__item--active' : ''}`} href="#!">
+                <a onClick={
+                  (evt) => handleCityChange(evt, city)
+                }
+                className={`locations__item-link tabs__item ${currentCity === city ? 'tabs__item--active' : ''}`} href="#!"
+                >
                   <span>{city}</span>
                 </a>
               </li>

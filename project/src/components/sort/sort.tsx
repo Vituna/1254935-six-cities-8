@@ -53,7 +53,7 @@ function Sort(props: SortProps): JSX.Element {
       >
         {PlacesSort.map((option, i) => (
           <li onClick={
-            (evt) => {handleClick(evt, option);}
+            (evt) => handleClick(evt, option)
           } className="places__option" tabIndex={0} key={`${option + i}`}
           >
             {option}
