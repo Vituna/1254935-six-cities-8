@@ -1,41 +1,25 @@
-import {connect, ConnectedProps} from 'react-redux';
-import {Switch, Route, Router as BrowserRouter} from 'react-router-dom';
-import {useState} from 'react';
+import { useSelector } from 'react-redux';
+import { Switch, Route, Router as BrowserRouter } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import { getAuthorizationStatus, getIsDataLoaded } from '../../store/auth-store/selectors';
 
-import {AuthorizationStatus, cities, PlacesSort} from '../../const';
-import {Offer} from '../../types/offer';
-
+import PrivateRoute from '../private-route/private-route';
 import Preloader from '../loading-screen/loading-screen';
 import Main from '../main/main';
 import SignIn from '../sign-in/sign-in';
 import Favorites from '../favorites/favorites';
 import Property from '../property/property';
 import NoFound from '../no-found/no-found';
-import PrivateRoute from '../private-route/private-route';
-import {Store} from '../../types/store';
 
-import {createBrowserHistory} from 'history';
+import { isCheckedAuth } from '../../utils';
+import { APIRoute } from '../../const';
 
 const browserHistory = createBrowserHistory();
 
-export const isCheckedAuth = (authorizationStatus: AuthorizationStatus): boolean =>
-  authorizationStatus === AuthorizationStatus.Unknown;
+function App(): JSX.Element {
 
-const mapStateToProps = ({hotels, authorizationStatus, isDataLoaded, isOffersLoading}: Store) => ({
-  authorizationStatus,
-  isDataLoaded,
-  hotels,
-  isOffersLoading,
-});
-
-const connector = connect(mapStateToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function App(props: PropsFromRedux): JSX.Element {
-  const {hotels: offers, authorizationStatus, isDataLoaded} = props;
-
-  const [focusedCard, setFocusedCard] = useState<Offer | undefined>(undefined);
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+  const isDataLoaded = useSelector(getIsDataLoaded);
 
   if (isCheckedAuth(authorizationStatus) || !isDataLoaded) {
     return (
@@ -43,32 +27,23 @@ function App(props: PropsFromRedux): JSX.Element {
     );
   }
 
-  const onListItemHover = (listItemName: string) => {
-    const currentPoint = offers.find((offer) => offer.title === listItemName);
-    setFocusedCard(currentPoint);
-  };
-
-  const onListItemLeave = () => {
-    setFocusedCard(undefined);
-  };
-
   return (
     <BrowserRouter history={browserHistory}>
       <Switch>
-        <Route exact path={'/'}>
-          <Main cities={cities} placesSort={PlacesSort} authorizationStatus={authorizationStatus} focusedCard={focusedCard} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave}/>
+        <Route exact path={APIRoute.Main}>
+          <Main />
         </Route>
-        <Route exact path={'/login'}>
+        <Route exact path={APIRoute.Login}>
           <SignIn />
         </Route>
         <PrivateRoute
           exact
-          path={'/favorites'}
-          render={() => <Favorites offers={offers} authorizationStatus={authorizationStatus} onListItemHover={onListItemHover}  onListItemLeave={onListItemLeave}/>}
+          path={APIRoute.Favorite}
+          render={() => <Favorites />}
         >
         </PrivateRoute>
         <Route exact path={'/offer/:id'}>
-          <Property authorizationStatus={authorizationStatus} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave}/>
+          <Property />
         </Route>
         <Route>
           <NoFound />
@@ -79,4 +54,4 @@ function App(props: PropsFromRedux): JSX.Element {
 }
 
 export {App};
-export default connector(App);
+export default App;

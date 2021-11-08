@@ -1,7 +1,10 @@
-import {OfferReview} from '../../types/offer';
+import { OfferReview } from '../../types/offer';
+
+import { formatDateAttribute, formatDateValue, getRating } from '../../utils';
 
 function ReviewItem(props: OfferReview): JSX.Element {
   const {user, rating, date, comment} = props;
+
   return (
     <li className="reviews__item">
       <div className="reviews__user user">
@@ -13,13 +16,13 @@ function ReviewItem(props: OfferReview): JSX.Element {
       <div className="reviews__info">
         <div className="reviews__rating rating">
           <div className="reviews__stars rating__stars">
-            <span style={{width: `${rating / 5 * 100}%`}}></span>
+            <span style={{width: `${getRating(rating)}%`}}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
         <p className="reviews__text">{comment}</p>
-        <time className="reviews__time" dateTime="2019-04-24">
-          {date}
+        <time className="reviews__time" dateTime={formatDateAttribute(date)}>
+          {formatDateValue(date)}
         </time>
       </div>
     </li>

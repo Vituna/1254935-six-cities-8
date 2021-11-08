@@ -1,29 +1,36 @@
-import {ThunkActionResult} from '../types/action';
-import {requireAuthorization, requireLogout, loadHotels, loadCurrentHotel, loadReviews, loadNearHotelComplete, setAuthInfoAction} from './action';
-import {saveToken, dropToken, Token} from '../components/services/token';
 import {toast} from 'react-toastify';
-import {APIRoute, AuthorizationStatus} from '../const';
+import {requireAuthorization, requireLogout, loadHotels, loadCurrentHotel, loadReviews, loadNearHotelComplete, setAuthInfoAction, sendReviewStatus, loadOffersStart, loadCurrentHotelError, setFavoriteHotelsAction, updateHotelAction, redirectToRoute} from './action';
 import {AuthData} from '../types/auth-data';
-import {OfferResponse, OfferReviewResponse} from '../types/offer';
-import {adaptAuthInfoToClient, adaptReviewToClient, offerAdapter} from '../adapter';
+import {NewReview, Offer, OfferResponse, OfferReviewResponse} from '../types/offer';
+import {ThunkActionResult} from '../types/action';
 
-const AUTH_FAIL_MESSAGE = 'Не забудьте авторизоваться';
+import {saveToken, dropToken, Token} from '../components/services/token';
+import {adaptAuthInfoToClient, adaptReviewToClient, offerAdapter} from '../adapter';
+import browserHistory from '../browser-history';
+
+import {APIRoute, AuthorizationStatus, AUTH_FAIL_MESSAGE, ReviewPostStatus} from '../const';
 
 export const fetchHotelsAction = (): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
+    dispatch(loadOffersStart());
+
     const {data} = await api.get<OfferResponse[]>(APIRoute.Hotels);
     dispatch(loadHotels(data.map((hotel) => offerAdapter(hotel))));
   };
 
-export const fetchCurrentHotelAction = (id: string): ThunkActionResult =>
+export const fetchCurrentHotelAction = (id: number): ThunkActionResult =>
   async (dispatch, _getStore, api): Promise<void> => {
-    const {data} = await api.get<OfferResponse>(
-      `${APIRoute.Hotels}/${id}`,
-    );
-    dispatch(loadCurrentHotel(offerAdapter(data)));
+    try {
+      const {data} = await api.get<OfferResponse>(
+        `${APIRoute.Hotels}/${id}`,
+      );
+      dispatch(loadCurrentHotel(offerAdapter(data)));
+    } catch {
+      dispatch(loadCurrentHotelError());
+    }
   };
 
-export const fetchNearHotelAction = (id: string): ThunkActionResult =>
+export const fetchNearHotelAction = (id: number): ThunkActionResult =>
   async (dispatch, _getStore, api): Promise<void> => {
     const { data } = await api.get<OfferResponse[]>(
       `${APIRoute.Hotels}/${id}/nearby`,
@@ -53,6 +60,7 @@ export const loginAction = ({login: email, password}: AuthData): ThunkActionResu
     const {data: {token}} = await api.post<{token: Token}>(APIRoute.Login, {email, password});
     saveToken(token);
     dispatch(requireAuthorization(AuthorizationStatus.Auth));
+    browserHistory.go(0);
   };
 
 export const logoutAction = (): ThunkActionResult =>
@@ -60,21 +68,62 @@ export const logoutAction = (): ThunkActionResult =>
     api.delete(APIRoute.Logout);
     dropToken();
     dispatch(requireLogout());
+    browserHistory.go(0);
   };
 
-export const fetchReviewsAction = (id: string): ThunkActionResult =>
+export const fetchReviewsAction = (id: number): ThunkActionResult =>
   async (dispatch, _getStore, api): Promise<void> => {
     const { data } = await api.get<OfferReviewResponse[]>(`${APIRoute.Reviews}/${id}`);
     const normalizedReviews = data.map((review: OfferReviewResponse) => (
       adaptReviewToClient(review)
     ));
-
     dispatch(loadReviews(normalizedReviews));
   };
 
-// export const sendReviewAction = (id: number, rating: string, comment }: ThunkActionResult =>
-//   async (dispatch, _getStore, api): Promise<void> => {
-//     await api.post<OfferReviewResponse>(`${APIRoute.Reviews}/${id}`, {rating, comment })
-//         dispatch(sendReview(true));
-//   };
+export const sendReviewAction = ({ comment, rating } : NewReview, id: number): ThunkActionResult =>
+  async (dispatch, _getStore, api) => {
+    dispatch(sendReviewStatus(ReviewPostStatus.Posting));
+    try {
+      const { data } = await api.post<OfferReviewResponse[]>(
+        `${APIRoute.Reviews}/${id}`,
+        { comment, rating },
+      );
+      const normalizedReviews = data.map((review) => (
+        adaptReviewToClient(review)
+      ));
+      dispatch(loadReviews(normalizedReviews));
+      dispatch(sendReviewStatus(ReviewPostStatus.Posted));
+    }
+    catch {
+      dispatch(sendReviewStatus(ReviewPostStatus.NotPosted));
+    }
+  };
 
+export const loadFavoriteAction = (): ThunkActionResult =>
+  async function (dispatch, _getState, api): Promise<void> {
+    const { data } = await api.get<OfferResponse[]>(APIRoute.Favorite);
+    const adaptedData = data.map((hotel) => offerAdapter(hotel));
+
+    dispatch(setFavoriteHotelsAction(adaptedData));
+  };
+
+
+export const sendFavoriteAction = (hotel: Offer, onComplete?: (updatedOffer: Offer) => void): ThunkActionResult =>
+  async function (dispatch, _getState, api): Promise<void> {
+    try {
+      const currentHotel = hotel;
+      const isFavorite = currentHotel?.isFavorite;
+
+      const { data } = await api.post<OfferResponse>(
+        `${APIRoute.Favorite}/${currentHotel.id}/${isFavorite ? '0' : '1'}`,
+      );
+      const newHotel = offerAdapter(data);
+
+      dispatch(updateHotelAction(newHotel));
+      onComplete && onComplete(newHotel);
+    }
+    catch {
+      dispatch(redirectToRoute(APIRoute.Login));
+      browserHistory.go(0);
+    }
+  };

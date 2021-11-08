@@ -1,32 +1,22 @@
 import { Link } from 'react-router-dom';
-import {connect, ConnectedProps} from 'react-redux';
-import {ThunkAppDispatch} from '../../types/action';
-import {logoutAction} from '../../store/api-actions';
-import {Store} from '../../types/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutAction } from '../../store/api-actions';
+import { getAuthInfo, getAuthorizationStatus, getCurrentEmail } from '../../store/auth-store/selectors';
 
-import {AuthorizationStatus} from '../../const';
+import { APIRoute, AuthorizationStatus } from '../../const';
 
-type UserProps = {
-  authorizationStatus: string;
-}
+function User(): JSX.Element {
 
-const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  logoutGame() {
+  const dispatch = useDispatch();
+
+  const currentEmail = useSelector(getCurrentEmail);
+  const authInfo = useSelector(getAuthInfo);
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+
+  const handleLogOutClick = (evt: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    evt.preventDefault();
     dispatch(logoutAction());
-  },
-});
-
-const mapStateToProps = ({ currentEmail, authInfo }: Store) => (
-  { currentEmail, authInfo }
-);
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-type ConnectedComponentProps = PropsFromRedux & UserProps;
-
-function User(props: ConnectedComponentProps): JSX.Element {
-  const {authorizationStatus, logoutGame, currentEmail, authInfo} = props;
+  };
 
   return (
     <nav className="header__nav">
@@ -34,19 +24,14 @@ function User(props: ConnectedComponentProps): JSX.Element {
         {AuthorizationStatus.Auth === authorizationStatus ? (
           <>
             <li className="header__nav-item user">
-              <Link className="header__nav-link header__nav-link--profile" to="/favorites">
+              <Link className="header__nav-link header__nav-link--profile" to={APIRoute.Favorite}>
                 <div className="header__avatar-wrapper user__avatar-wrapper">
                 </div>
                 <span className="header__user-name user__name">{currentEmail || authInfo.email}</span>
               </Link>
             </li>
-            <li className="header__nav-item" onClick={(evt) => {
-              evt.preventDefault();
-
-              logoutGame();
-            }}
-            >
-              <Link className="header__nav-link" to="/login">
+            <li className="header__nav-item" >
+              <Link className="header__nav-link" onClick={handleLogOutClick} to="/">
                 <span className="header__signout">Sign out</span>
               </Link>
             </li>
@@ -64,4 +49,4 @@ function User(props: ConnectedComponentProps): JSX.Element {
 }
 
 export {User};
-export default connector(User);
+export default User;

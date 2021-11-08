@@ -1,4 +1,5 @@
 function Preloader(): JSX.Element {
+
   const preloaderStyle = {
     margin: '0 auto',
     width: '200px',

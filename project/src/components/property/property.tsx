@@ -1,52 +1,40 @@
-import {useParams} from 'react-router-dom';
-import {useEffect, useMemo} from 'react';
+import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect, useMemo } from 'react';
+import { fetchCurrentHotelAction, fetchReviewsAction, fetchNearHotelAction, sendFavoriteAction } from '../../store/api-actions';
+import { getCurrentHotel, getIsLoadCurrentHotelError, getNearHotel } from '../../store/offer-store/selectors';
+import { getReviews } from '../../store/reviews-store/selectors';
+import { getAuthorizationStatus } from '../../store/auth-store/selectors';
+import { updateCurrentOffer, updateNearbyOffers } from '../../store/action';
+
+import { Offer } from '../../types/offer';
 
 import Header from '../header/header';
 import OfferCard from '../offer-card/offer-card';
 import ReviewList from '../review-list/review-list';
 import Map from '../map/map';
+import NoFound from '../no-found/no-found';
 
-import {page, MapSize} from '../../const';
-import { ThunkAppDispatch } from '../../types/action';
-import { connect, ConnectedProps } from 'react-redux';
-import { Store } from '../../types/store';
-import { fetchCurrentHotelAction, fetchReviewsAction, fetchNearHotelAction } from '../../store/api-actions';
+import { page } from '../../const';
+import { getRating } from '../../utils';
 
-type PropertyProps = {
-  authorizationStatus: string;
-  onListItemHover: (listItemName: string) => void;
-  onListItemLeave: () => void;
-}
+function Property(): JSX.Element {
 
-const mapStateToProps = ({ currentHotel, reviews, nearHotel }: Store) => (
-  { currentHotel, reviews, nearHotel}
-);
+  const dispatch = useDispatch();
 
-const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  fetchReviews: (id: string) => {
-    dispatch(fetchReviewsAction(id));
-  },
-  fetchCurrentHotel: (id: string) => {
-    dispatch(fetchCurrentHotelAction(id));
-  },
-  fetchNearbyHotel: (id: string) => {
-    dispatch(fetchNearHotelAction(id));
-  },
-});
+  const { id } = useParams<{ id: string & number}>();
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function Property(props: PropsFromRedux & PropertyProps): JSX.Element {
-  const {currentHotel: offer, reviews, authorizationStatus, nearHotel, onListItemHover, onListItemLeave, fetchReviews, fetchCurrentHotel, fetchNearbyHotel} = props;
-
-  const { id } = useParams<{ id: string }>();
+  const offer = useSelector(getCurrentHotel);
+  const reviews = useSelector(getReviews);
+  const nearHotel = useSelector(getNearHotel);
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+  const isLoadCurrentHotelError = useSelector(getIsLoadCurrentHotelError);
 
   useEffect(() => {
-    fetchReviews(id);
-    fetchCurrentHotel(id);
-    fetchNearbyHotel(id);
-  }, [fetchCurrentHotel, fetchReviews, fetchNearbyHotel, id]);
+    dispatch(fetchReviewsAction(id));
+    dispatch(fetchCurrentHotelAction(id));
+    dispatch(fetchNearHotelAction(id));
+  }, [dispatch, id]);
 
   const offers = useMemo(() => {
     if (!offer) {
@@ -55,18 +43,31 @@ function Property(props: PropsFromRedux & PropertyProps): JSX.Element {
     return [...nearHotel, offer];
   }, [offer, nearHotel]);
 
-  // const [isActiveFavorite, setActiveFavorite] = useState(offer.isFavorite);
-  // const handleSort = (): void => {
-  //   setActiveFavorite(!isActiveFavorite);
-  // };
-  // console.log(authorizationStatus)
+  const handleOfferFavoriteClick = () => {
+    if (offer) {
+      dispatch(sendFavoriteAction(
+        offer,
+        (updatedOffer) => {
+          dispatch(updateCurrentOffer(updatedOffer));
+        },
+      ));
+    }
+  };
+
+  const handleChangeFavorite = (currentOffer: Offer): void => {
+    dispatch(sendFavoriteAction(currentOffer,
+      (updatedOffer) => {
+        dispatch(updateNearbyOffers(updatedOffer));
+      },
+    ));
+  };
 
   return (
     <div className="page">
 
-      <Header authorizationStatus={authorizationStatus}/>
+      <Header />
 
-      {offer && (
+      {isLoadCurrentHotelError ? <NoFound/> : offer && (
         <main className="page__main page__main--property">
           <section className="property">
             <div className="property__gallery-container container">
@@ -89,7 +90,7 @@ function Property(props: PropsFromRedux & PropertyProps): JSX.Element {
                   <h1 className="property__name">
                     {offer.title}
                   </h1>
-                  <button className={`property__bookmark-button button ${offer.isFavorite ? 'property__bookmark-button--active' : ''}`} type="button" >
+                  <button className={`property__bookmark-button button ${ offer.isFavorite ? 'property__bookmark-button--active' : ''}`} onClick={handleOfferFavoriteClick}  type="button" >
                     <svg className="property__bookmark-icon" width="31" height="33">
                       <use xlinkHref="#icon-bookmark"></use>
                     </svg>
@@ -98,7 +99,7 @@ function Property(props: PropsFromRedux & PropertyProps): JSX.Element {
                 </div>
                 <div className="property__rating rating">
                   <div className="property__stars rating__stars">
-                    <span style={{width: `${offer.rating / 5 * 100}%`}}></span>
+                    <span style={{width: `${getRating(offer.rating)}%`}}></span>
                     <span className="visually-hidden">Rating</span>
                   </div>
                   <span className="property__rating-value rating__value">{offer.rating}</span>
@@ -133,15 +134,19 @@ function Property(props: PropsFromRedux & PropertyProps): JSX.Element {
                 <div className="property__host">
                   <h2 className="property__host-title">Meet the host</h2>
                   <div className="property__host-user user">
-                    <div className="property__avatar-wrapper property__avatar-wrapper--pro user__avatar-wrapper">
+                    <div className={`property__avatar-wrapper user__avatar-wrapper
+                      ${offer.host.isPro ? 'property__avatar-wrapper--pro' : ''}`}
+                    >
                       <img className="property__avatar user__avatar" src={offer.host.avatarUrl} width="74" height="74" alt="Host avatar" />
                     </div>
                     <span className="property__user-name">
                       {offer.host.name}
                     </span>
-                    <span className="property__user-status">
-                      {offer.host.isPro ? 'Pro' : ''}
-                    </span>
+                    {offer.host.isPro && (
+                      <span className="property__user-status">
+                         Pro
+                      </span>
+                    )}
                   </div>
                   <div className="property__description">
                     <p className="property__text">
@@ -150,14 +155,13 @@ function Property(props: PropsFromRedux & PropertyProps): JSX.Element {
                   </div>
                 </div>
 
-                <ReviewList review={reviews} authorizationStatus={authorizationStatus}/>
+                <ReviewList review={reviews} authorizationStatus={authorizationStatus} id={id}/>
 
               </div>
             </div>
-            {}
             <section className="property__map map">
 
-              <Map offers={offers} mapSize={MapSize.MapHeightOffer} focusedCard={offer} zoomOnOffer={false}/>
+              <Map offers={offers} focusedCard={offer} zoomOnOffer={false} scrolling/>
 
             </section>
           </section>
@@ -166,7 +170,7 @@ function Property(props: PropsFromRedux & PropertyProps): JSX.Element {
               <h2 className="near-places__title">Other places in the neighbourhood</h2>
               <div className="near-places__list places__list">
                 {nearHotel.map((near) => (
-                  <OfferCard {...near} key={near.id} cardType={page.Near} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave}/>
+                  <OfferCard offer={near} key={near.id} cardType={page.Near} onFavoriteClick={handleChangeFavorite} />
                 ))}
               </div>
             </section>
@@ -178,4 +182,4 @@ function Property(props: PropsFromRedux & PropertyProps): JSX.Element {
 
 export {Property};
 
-export default connector(Property);
+export default Property;

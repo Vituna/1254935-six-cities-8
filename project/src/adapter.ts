@@ -1,4 +1,4 @@
-import { OfferResponse, Offer, OfferReviews, OfferReviewResponse } from './types/offer';
+import { OfferResponse, Offer, OfferReviews, OfferReviewResponse, UserInfoResponse, UserInfo } from './types/offer';
 
 export const offerAdapter = (hotel: OfferResponse): Offer => ({
   bedrooms: hotel.bedrooms,
@@ -14,7 +14,7 @@ export const offerAdapter = (hotel: OfferResponse): Offer => ({
   goods: hotel.goods,
   host: {
     id: hotel.host.id,
-    name: hotel.host.avatar_url,
+    name: hotel.host.name,
     avatarUrl: hotel.host.avatar_url,
     isPro: hotel.host.is_pro,
   },
@@ -48,26 +48,12 @@ export const adaptReviewToClient = (reviewData: OfferReviewResponse): OfferRevie
   date: reviewData.date,
 });
 
-export type UserInfo = {
-  avatarrl: string;
-  email: string;
-  id: number;
-  isPro: boolean;
-  name: string;
-  token: string;
-};
-
-
-export const adaptAuthInfoToClient = (userInfo: any):any => {
-  const adaptedUerInfo = {
-    avatarUrl: userInfo['avatar_url'],
-    email: userInfo.email,
-    id: userInfo.id,
-    isPro: userInfo['is_pro'],
-    name: userInfo.name,
-    token: userInfo.token,
-  };
-
-  return adaptedUerInfo;
-};
+export const adaptAuthInfoToClient = (userInfo: UserInfoResponse): UserInfo => ({
+  avatarUrl: userInfo['avatar_url'],
+  email: userInfo.email,
+  id: userInfo.id,
+  isPro: userInfo['is_pro'],
+  name: userInfo.name,
+  token: userInfo.token,
+});
 

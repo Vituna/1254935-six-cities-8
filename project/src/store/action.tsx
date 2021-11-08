@@ -1,13 +1,13 @@
-import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction, LoadCurrentHotelAction, LoadCurrentOfferErrorAction, LoadNearHotelCompleteAction} from '../types/action';
-import {Offer, OfferReview, PlacesSortType} from '../types/offer';
-import {AuthorizationStatus} from '../const';
+import {ActionType, ChangeCurrentCityAction, ChangePlacesSortAction, LoadOffersStart, LoadOffersAction, ChangeCurrentEmailAction, LoadReviewsAction, LoadCurrentHotelAction, LoadCurrentHotelErrorAction, LoadNearHotelCompleteAction, SendReviewStatusAction, SetFavoriteHotelsAction, UpdateHotelAction, RedirectToRouteAction, UpdateCurrentOfferAction, UpdateFavoriteOffersAction, UpdateNearbyOffersAction} from '../types/action';
+import {Offer, OfferReview, UserInfo} from '../types/offer';
+import {APIRoute, AuthorizationStatus, ReviewPostStatus} from '../const';
 
 export const changeCurrentCity = (currentCity: string): ChangeCurrentCityAction => ({
   type: ActionType.ChangeCity,
   payload: currentCity,
 });
 
-export const changePlacesSort = (typeSort: PlacesSortType): ChangePlacesSortAction => ({
+export const changePlacesSort = (typeSort: string): ChangePlacesSortAction => ({
   type: ActionType.ChangeSort,
   payload: typeSort,
 });
@@ -17,21 +17,11 @@ export const requireAuthorization = (authInfo: AuthorizationStatus) => ({
   payload: authInfo,
 } as const);
 
-export type UserInfo = {
-  avatarUrl: string;
-  email: string;
-  id: number;
-  isPro: boolean;
-  name: string;
-  token: string;
-};
-
 export const setAuthInfoAction = (authInfo: UserInfo) =>
   ({
     type: ActionType.SetAuthInfo,
     payload: authInfo,
   } as const);
-
 
 export const requireLogout = () => ({
   type: ActionType.RequireLogout,
@@ -52,13 +42,22 @@ export const loadNearHotelComplete = (nearbyOffers: Offer[]): LoadNearHotelCompl
   payload: nearbyOffers,
 });
 
-export const loadCurrentOfferError = (): LoadCurrentOfferErrorAction => ({
-  type: ActionType.LoadCurrentOfferError,
+export const loadCurrentHotelError = (): LoadCurrentHotelErrorAction => ({
+  type: ActionType.LoadCurrentHotelError,
 });
 
-export const loadOffersStart = (isOffersLoaded: boolean): LoadOffersStart => ({
+export const updateCurrentOffer = (offer: Offer): UpdateCurrentOfferAction => ({
+  type: ActionType.UpdateCurrentOffer,
+  payload: offer,
+});
+
+export const updateNearbyOffers = (offer: Offer): UpdateNearbyOffersAction => ({
+  type: ActionType.UpdateNearbyOffers,
+  payload: offer,
+});
+
+export const loadOffersStart = (): LoadOffersStart => ({
   type: ActionType.LoadOffersStart,
-  payload: isOffersLoaded,
 });
 
 export const changeCurrentEmail = (currentEmail: string): ChangeCurrentEmailAction => ({
@@ -71,9 +70,27 @@ export const loadReviews = (reviews: OfferReview[]): LoadReviewsAction => ({
   payload: reviews,
 });
 
-export const sendReview = (status: unknown) => ({
-  type: ActionType.SendReview,
-  payload: status,
+export const sendReviewStatus = (reviewPostStatus: ReviewPostStatus): SendReviewStatusAction => ({
+  type: ActionType.SendReviewStatus,
+  payload: reviewPostStatus,
 });
 
+export const setFavoriteHotelsAction = (favoritesHotels: Offer[]): SetFavoriteHotelsAction => ({
+  type: ActionType.SetFavoriteHotels,
+  payload: favoritesHotels,
+});
 
+export const updateFavoriteOffers = (offer: Offer): UpdateFavoriteOffersAction => ({
+  type: ActionType.UpdateFavoriteOffers,
+  payload: offer,
+});
+
+export const updateHotelAction = (hotel: Offer): UpdateHotelAction => ({
+  type: ActionType.UpdateHotel,
+  payload: hotel,
+});
+
+export const redirectToRoute = (url: APIRoute): RedirectToRouteAction => ({
+  type: ActionType.RedirectToRoute,
+  payload: url,
+});

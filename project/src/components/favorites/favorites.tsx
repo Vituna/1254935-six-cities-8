@@ -1,26 +1,58 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { getFavoriteHotelItems } from '../../store/favorite-store/selectors';
+import { loadFavoriteAction, sendFavoriteAction } from '../../store/api-actions';
+import { changeCurrentCity, updateFavoriteOffers } from '../../store/action';
+
+import { Offer } from '../../types/offer';
+
 import Header from '../header/header';
 import Logo from '../logo/logo';
 import OfferCard from '../offer-card/offer-card';
-import {Offer} from '../../types/offer';
 
-import {page} from '../../const';
+import { APIRoute, page } from '../../const';
 
-type FavoritesProps = {
-  offers: Offer[];
-  authorizationStatus: string;
-  onListItemHover: (listItemName: string) => void;
-  onListItemLeave: () => void;
-}
+type GrouppedOffers = Record<string, Offer[]>
 
-function Favorites(props: FavoritesProps): JSX.Element {
-  const {offers, authorizationStatus, onListItemHover, onListItemLeave} = props;
+function Favorites(): JSX.Element {
 
-  const favoriteOffers = offers.filter((offer) => offer.isFavorite);
+  const dispatch = useDispatch();
+
+  const favoriteHotelItems = useSelector(getFavoriteHotelItems);
+
+  const favoriteOffers = favoriteHotelItems.filter((offer) => offer.isFavorite);
+
+  const groupedFavoriteOffers = favoriteOffers.reduce<GrouppedOffers>((res, offer) => {
+    const { name } = offer.city;
+    if (!Object.keys(res).includes(name)) {
+      res[name] = [];
+    }
+    res[name].push(offer);
+    return res;
+  }, {});
+
+  const handleFavoriteClick = (currentOffer: Offer) => {
+    dispatch(sendFavoriteAction(currentOffer,
+      (updatedOffer) => {
+        dispatch(updateFavoriteOffers(updatedOffer));
+      },
+    ));
+  };
+
+  const handleCityLinkClick = (city: string) => {
+    dispatch(changeCurrentCity(city));
+  };
+
+  useEffect(() => {
+    dispatch(loadFavoriteAction());
+  }, [dispatch]);
+  dispatch(loadFavoriteAction());
 
   return (
     <div className="page">
 
-      <Header authorizationStatus={authorizationStatus}/>
+      <Header />
 
       {(favoriteOffers.length === 0) ? (
         <main className="page__main page__main--favorites page__main--favorites-empty">
@@ -40,20 +72,23 @@ function Favorites(props: FavoritesProps): JSX.Element {
             <section className="favorites">
               <h1 className="favorites__title">Saved listing</h1>
               <ul className="favorites__list">
-                <li className="favorites__locations-items">
-                  <div className="favorites__locations locations locations--current">
-                    <div className="locations__item">
-                      <a className="locations__item-link" href="/">
-                        <span>Amsterdam</span>
-                      </a>
+                {Object.entries(groupedFavoriteOffers).map(([cityName, cityOffers]) => (
+                  <li className="favorites__locations-items" key={cityName}>
+                    <div className="favorites__locations locations locations--current">
+                      <div className="locations__item">
+                        <Link className="locations__item-link" onClick={() => { handleCityLinkClick(cityName);}} to={APIRoute.Main}>
+                          <span>{cityName}</span>
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                  <div className="favorites__places">
-                    {offers.map((offer) => (
-                      <OfferCard {...offer} key={offer.id}  cardType={page.Favorites} onListItemHover={onListItemHover}  onListItemLeave={onListItemLeave}/>
-                    ))}
-                  </div>
-                </li>
+                    <div className="favorites__places">
+                      {cityOffers.map((offer: Offer) => (
+                        <OfferCard offer={offer} key={offer.id} cardType={page.Favorites} onFavoriteClick={handleFavoriteClick} />
+                      ))}
+                    </div>
+                  </li>
+                ))}
+
               </ul>
             </section>
           </div>

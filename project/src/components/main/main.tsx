@@ -1,50 +1,28 @@
-import {Dispatch} from 'redux';
-import {connect, ConnectedProps} from 'react-redux';
-import {Store} from '../../types/store';
-import {Actions} from '../../types/action';
-import {changeCurrentCity, changePlacesSort} from '../../store/action';
+import { useSelector, useDispatch } from 'react-redux';
+import { changeCurrentCity, changePlacesSort } from '../../store/action';
+import { getCurrentCity } from '../../store/menu-store/selectors';
+import { getHotels, getIsOffersLoading } from '../../store/offer-store/selectors';
 
 import Header from '../header/header';
 import LocationsItem from '../locations-item/locations-item';
-import Sort from '../sort/sort';
 import CardsList from '../cards-list/cards-list';
-import Map from '../map/map';
-import MainEmpty from '../main-empty/main-empty';
-// import Preloader from '../loading-screen/loading-screen';
+import Preloader from '../loading-screen/loading-screen';
 
-import {MapSize} from '../../const';
-import {Offer, PlacesSortType} from '../../types/offer';
+function Main(): JSX.Element {
 
-type MainScreenProps = {
-  cities: string[];
-  placesSort: PlacesSortType[];
-  authorizationStatus: string;
-  onListItemHover: (listItemName: string) => void;
-  onListItemLeave: () => void;
-  focusedCard?: Offer | undefined;
-}
+  const dispatch = useDispatch();
 
-const mapStateToProps = ({ currentCity, hotels, typeSort, isOffersLoading }: Store) => (
-  { currentCity, hotels, typeSort, isOffersLoading }
-);
+  const currentCity = useSelector(getCurrentCity);
+  const offers = useSelector(getHotels);
+  const isOffersLoading = useSelector(getIsOffersLoading);
 
-const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
-  onCityChange: (city: string) => {
+  const onCityChange = (city: string) => {
     dispatch(changeCurrentCity(city));
-  },
+  };
 
-  onSortChange: (option: PlacesSortType) => {
+  const onSortChange = (option: string) => {
     dispatch(changePlacesSort(option));
-  },
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function Main(props: PropsFromRedux & MainScreenProps): JSX.Element {
-
-  const {hotels: offers, cities, placesSort, authorizationStatus, focusedCard, currentCity, typeSort, onListItemHover, onListItemLeave, onCityChange, onSortChange} = props;
+  };
 
   const cityOffers = offers.filter((offer) => currentCity === offer.city.name);
   const noOffers = cityOffers.length === 0;
@@ -52,35 +30,15 @@ function Main(props: PropsFromRedux & MainScreenProps): JSX.Element {
   return(
     <div className="page page--gray page--main">
 
-      <Header authorizationStatus={authorizationStatus}/>
+      <Header />
 
-      <main className={`page__main page__main--index' ${noOffers ? 'page__main--index-empty' : ''}`}>
-        <h1 className="visually-hidden">Cities</h1>
+      <main className={`'page__main ' ${noOffers ? 'page__main--index-empty' : 'page__main--index'}`}>
 
-        {noOffers ? (<MainEmpty currentCity={currentCity}/>) : (
-          <>
-            <LocationsItem cities={cities} currentCity={currentCity} onCityChange={onCityChange} />
-            <div className="cities">
-              <div className="cities__places-container container">
-                <section className="cities__places places">
-                  <h2 className="visually-hidden">Places</h2>
-                  <b className="places__found">{cityOffers.length} places to stay in {currentCity}</b>
+        <LocationsItem currentCity={currentCity} onCityChange={onCityChange} />
 
-                  <Sort placesSort={placesSort} typeSort={typeSort} onSortChange={onSortChange} />
-
-                  <CardsList offers={cityOffers} typeSort={typeSort} onListItemHover={onListItemHover} onListItemLeave={onListItemLeave} />
-
-                </section>
-                <div className="cities__right-section">
-                  <section className="cities__map map">
-
-                    <Map offers={cityOffers} mapSize={MapSize.MapHeightOffer} focusedCard={focusedCard} />
-
-                  </section>
-                </div>
-              </div>
-            </div>
-          </>)}
+        {isOffersLoading ? (<Preloader />) : (
+          <CardsList offers={cityOffers} currentCity={currentCity} noOffers={noOffers} onSortChange={onSortChange} />
+        )}
 
       </main>
     </div>
@@ -89,4 +47,4 @@ function Main(props: PropsFromRedux & MainScreenProps): JSX.Element {
 
 export {Main};
 
-export default connector(Main);
+export default Main;

@@ -1,101 +1,93 @@
-import { useState } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
-// import { sendReviewAction } from '../../store/api-actions';
-// import { ThunkAppDispatch } from '../../types/action';
+import { ChangeEvent, FormEvent, Fragment, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { sendReviewAction } from '../../store/api-actions';
+import { getReviewPostStatus } from '../../store/reviews-store/selectors';
 
-// const mapStateToProps = ({ authorizationStatus }: Store) => (
-//   { authorizationStatus }
-// );
+import { Ratings, ReviewPostStatus } from '../../const';
+import { getFormValid } from '../../utils';
 
-// const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-//   sendReviews(id: number, reviewData: any) {
-//     dispatch(sendReviewAction(id, reviewData));
-//   },
-// });
+type ReviewFormProps = {
+  id: number,
+}
 
-const connector = connect(null, null);
+function ReviewForm(props: ReviewFormProps): JSX.Element {
+  const { id  } = props;
 
-type PropsFromRedux = ConnectedProps<typeof connector>;
+  const dispatch = useDispatch();
 
+  const reviewPostStatus = useSelector(getReviewPostStatus);
 
-function ReviewForm(sendReviews: PropsFromRedux): JSX.Element {
-  const [reviewValue] = useState('');
-  const [rating, setRating] = useState(0);
+  const [
+    isReviewPosting,
+    isReviewPosted,
+    isReviewNotPosted,
+  ] = [
+    reviewPostStatus === ReviewPostStatus.Posting,
+    reviewPostStatus === ReviewPostStatus.Posted,
+    reviewPostStatus === ReviewPostStatus.NotPosted,
+  ];
 
-  const handleSubmitForm = (evt: React.FormEvent<HTMLFormElement>): void => {
+  useEffect(() => {
+    if (isReviewPosted) {
+      setRating('');
+      setСomment('');
+    }
+  }, [isReviewPosted]);
+
+  const [comment, setСomment] = useState('');
+  const [rating, setRating] = useState('');
+
+  const handleSubmitForm = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+    dispatch(sendReviewAction({comment, rating: Number(rating)}, id));
   };
 
-  const handleChangeText = (evt: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    // setReviewValue(evt.target.value);
-    // sendReviews(id, {
-    //   rating: formRef.current.rating.value,
-    //   comment: reviewRef.current.value,
-    // });
+  const handleChangeText = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    setСomment(evt.target.value);
   };
 
   const handleChangeRating = (evt: React.ChangeEvent<HTMLInputElement>): void => {
-    setRating(+evt.target.value);
+    setRating(evt.target.value);
   };
 
-  const isFormValid = reviewValue.length > 60 && Boolean(rating);
-
   return (
-    <form className="reviews__form form" action="#" method="post" onSubmit={handleSubmitForm}>
+    <form className="reviews__form form" action="#" method="post" onSubmit={handleSubmitForm} >
       <label className="reviews__label form__label" htmlFor="review">
         Your review
       </label>
       <div className="reviews__rating-form form__rating">
 
-        <input className="form__rating-input visually-hidden" name="rating" value="5" id="5-stars" type="radio" onChange={handleChangeRating} />
-        <label htmlFor="5-stars" className="reviews__rating-label form__rating-label" title="perfect">
-          <svg className="form__star-image" width="37" height="33">
-            <use href="#icon-star" />
-          </svg>
-        </label>
+        {Ratings.map(({ title, value }) => (
+          <Fragment key={value}>
+            <input className="form__rating-input visually-hidden" name="rating" checked={value === rating} value={value} id={`${value}-stars`} type="radio" onChange={handleChangeRating} disabled={isReviewPosting} />
+            <label htmlFor={`${value}-stars`} className="reviews__rating-label form__rating-label" title={title} >
+              <svg className="form__star-image" width="37" height="33">
+                <use xlinkHref="#icon-star" />
+              </svg>
+            </label>
+          </Fragment>
+        ))}
 
-        <input className="form__rating-input visually-hidden" name="rating" value="4" id="4-stars" type="radio" onChange={handleChangeRating} />
-        <label htmlFor="4-stars" className="reviews__rating-label form__rating-label" title="good">
-          <svg className="form__star-image" width="37" height="33">
-            <use href="#icon-star" />
-          </svg>
-        </label>
-
-        <input className="form__rating-input visually-hidden" name="rating" value="3" id="3-stars" type="radio" onChange={handleChangeRating} />
-        <label htmlFor="3-stars" className="reviews__rating-label form__rating-label" title="not bad">
-          <svg className="form__star-image" width="37" height="33">
-            <use href="#icon-star" />
-          </svg>
-        </label>
-
-        <input className="form__rating-input visually-hidden" name="rating" value="2" id="2-stars" type="radio" onChange={handleChangeRating} />
-        <label htmlFor="2-stars" className="reviews__rating-label form__rating-label" title="badly">
-          <svg className="form__star-image" width="37" height="33">
-            <use href="#icon-star" />
-          </svg>
-        </label>
-
-        <input className="form__rating-input visually-hidden" name="rating" value="1" id="1-star" type="radio" onChange={handleChangeRating} />
-        <label htmlFor="1-star" className="reviews__rating-label form__rating-label" title="terribly">
-          <svg className="form__star-image" width="37" height="33">
-            <use href="#icon-star" />
-          </svg>
-        </label>
       </div>
-      <textarea className="reviews__textarea form__textarea" id="review" name="review" placeholder="Tell how was your stay, what you like and what can be improved" value={reviewValue} onChange={handleChangeText} />
+      <textarea className="reviews__textarea form__textarea" id="review" name="review" placeholder="Tell how was your stay, what you like and what can be improved" value={comment} maxLength={300} onChange={handleChangeText} disabled={isReviewPosting}/>
       <div className="reviews__button-wrapper">
         <p className="reviews__help">
           To submit review please make sure to set <span className="reviews__star">rating</span>
           and describe your stay with at least
           <b className="reviews__text-amount">50 characters</b>.
         </p>
-        <button className="reviews__submit form__submit button" type="submit" disabled={!isFormValid}>
+        <button className="reviews__submit form__submit button" type="submit" disabled={!getFormValid(comment.length, rating) || isReviewPosting}>
           Submit
         </button>
       </div>
+
+      {isReviewNotPosted && (
+        <p style={{color: 'red', textAlign: 'center'}}>Sending error. Please, try again.</p>
+      )}
+
     </form>
   );
 }
 
 export  {ReviewForm};
-export default connector(ReviewForm);
+export default ReviewForm;

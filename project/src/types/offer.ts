@@ -73,7 +73,6 @@ export type OfferReviews = {
   date: string,
 };
 
-
 export type CityLocation = {
     latitude: number,
     longitude: number,
@@ -98,7 +97,7 @@ export type OfferReviewResponse = Omit<OfferReviews, 'user'>
 }
 
 export type UseParamTypes = {
-  id: string;
+  id: number;
 }
 
 export type OfferResponse = Omit<
@@ -121,3 +120,30 @@ export type OfferResponse = Omit<
   'preview_image': string,
 }
 
+export type NewReview = {
+  comment: string,
+  rating: number,
+};
+
+export type UserInfo = {
+  avatarUrl: string,
+  email: string,
+  id: number,
+  isPro: boolean,
+  name: string,
+  token: string,
+ };
+
+export type UserInfoResponse = Omit<UserInfo, 'avatarUrl' | 'isPro'> & {
+ 'avatar_url': string,
+ 'is_pro': boolean,
+};
+
+export enum City {
+  Paris = 'Paris',
+  Cologne = 'Cologne',
+  Brussels = 'Brussels',
+  Amsterdam = 'Amsterdam',
+  Hamburg = 'Hamburg',
+  Dusseldorf = 'Dusseldorf',
+}

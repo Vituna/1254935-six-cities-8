@@ -1,33 +1,33 @@
-import {useRef, useEffect, useMemo, useState, useCallback} from 'react';
+import { useRef, useEffect, useMemo, useState, useCallback } from 'react';
 import leaflet, { Map, LayerGroup, TileLayer } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import {Offer} from '../../types/offer';
+import { Offer } from '../../types/offer';
 
-import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
+import { URL_MARKER_DEFAULT, URL_MARKER_CURRENT } from '../../const';
 
 type MapProps = {
   offers: Offer[];
-  mapSize: string;
-  focusedCard?: Offer | undefined;
+  focusedCard?: Offer | null;
   zoomOnOffer?: boolean,
+  scrolling?: boolean;
 }
 
 const defaultCustomIcon = new leaflet.Icon({
   iconUrl: URL_MARKER_DEFAULT,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconSize: [27, 39],
+  iconAnchor: [20, 39],
 });
 
 const currentCustomIcon = new leaflet.Icon({
   iconUrl: URL_MARKER_CURRENT,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconSize: [27, 39],
+  iconAnchor: [20, 39],
 });
 
 function MapSity(props: MapProps): JSX.Element {
 
-  const {offers, mapSize, focusedCard, zoomOnOffer = true} = props;
+  const {offers, focusedCard, zoomOnOffer = true, scrolling} = props;
 
   const mapRef = useRef(null);
 
@@ -47,6 +47,7 @@ function MapSity(props: MapProps): JSX.Element {
     const map = new Map(mapRef.current, {
       center: [latitude, longitude],
       zoom: zoom,
+      scrollWheelZoom: !scrolling,
     });
 
     map.addLayer(new TileLayer(
@@ -56,7 +57,7 @@ function MapSity(props: MapProps): JSX.Element {
       },
     ));
     setMapInstance(map);
-  }, [city, mapRef, mapInstance]);
+  }, [mapInstance, city, scrolling]);
 
   const renderOffersPins = useCallback(() => {
     if (!mapInstance) {
@@ -75,7 +76,7 @@ function MapSity(props: MapProps): JSX.Element {
         lng: offer.location.longitude,
       });
 
-      const isActive = focusedCard && offer.title === focusedCard.title;
+      const isActive = focusedCard && offer.id === focusedCard.id;
 
       pin.setIcon(isActive ? currentCustomIcon : defaultCustomIcon)
         .addTo(pinsGroupRef.current);
@@ -92,7 +93,7 @@ function MapSity(props: MapProps): JSX.Element {
 
   return (
     <div
-      style={{ height: mapSize}}
+      style={{ height: '100%'}}
       ref={mapRef}
     >
     </div>);
