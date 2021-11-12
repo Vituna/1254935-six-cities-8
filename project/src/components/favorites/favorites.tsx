@@ -47,7 +47,6 @@ function Favorites(): JSX.Element {
   useEffect(() => {
     dispatch(loadFavoriteAction());
   }, [dispatch]);
-  dispatch(loadFavoriteAction());
 
   return (
     <div className="page">

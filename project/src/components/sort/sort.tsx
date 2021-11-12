@@ -41,7 +41,7 @@ function Sort(props: SortProps): JSX.Element {
 
   return (
     <form className="places__sorting" action="#" method="get" ref={sortRef}>
-      <span className="places__sorting-caption">Sort by</span>
+      <span className="places__sorting-caption">Sort by </span>
       <span className="places__sorting-type" tabIndex={0} onClick={handleSort}>
         {typeSort}
         <svg className="places__sorting-arrow" width="7" height="4">
@@ -49,12 +49,12 @@ function Sort(props: SortProps): JSX.Element {
         </svg>
       </span>
       <ul
-        className={`places__options places__options--custom ${isOpenSort ? 'places__options--opened' : ''}`}
+        className={`places__options places__options--custom ${isOpenSort ? 'places__options--opened' : 'places__option--active'}`}
       >
         {PlacesSort.map((option, i) => (
           <li onClick={
             (evt) => handleClick(evt, option)
-          } className="places__option" tabIndex={0} key={`${option + i}`}
+          } className={`places__option ${typeSort === option && 'places__option--active'}` } tabIndex={0} key={`${option + i}`}
           >
             {option}
           </li>

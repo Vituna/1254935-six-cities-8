@@ -17,9 +17,20 @@ function OfferCard(props: OfferCardProps): JSX.Element {
   const {cardType, offer, onListItemHover, onListItemLeave, onFavoriteClick} = props;
   const {id, type, title, price, rating, isFavorite, isPremium, previewImage} = offer;
 
-  const isOffercardType: boolean = cardType === page.Offer;
   const isFavoriteCardType: boolean = cardType === page.Favorites;
-  const isNearCardType: boolean = cardType === page.Near;
+
+  const getСhangesClassName = (): string => {
+    switch (cardType) {
+      case page.Offer:
+        return 'cities__place-card';
+      case page.Favorites:
+        return 'favorites__card';
+      case page.Near:
+        return 'near-places__card';
+      default:
+        return '';
+    }
+  };
 
   const handleScrollTop = (): void => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -38,7 +49,7 @@ function OfferCard(props: OfferCardProps): JSX.Element {
   };
 
   return (
-    <article className={`place-card ${isFavoriteCardType && 'favorites__card'} ${isOffercardType && 'cities__place-card'} ${isNearCardType && 'near-places__card'}`} onMouseEnter={handleHoverCard} onMouseLeave={handleLeaveCard}>
+    <article className={`place-card ${getСhangesClassName()}`} onMouseEnter={handleHoverCard} onMouseLeave={handleLeaveCard}>
       {isPremium && <div className="place-card__mark"><span>Premium</span></div>}
       <div className={isFavoriteCardType ? 'favorites__image-wrapper place-card__image-wrapper' : 'cities__image-wrapper place-card__image-wrapper'}>
         <a href="/">

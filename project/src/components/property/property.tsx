@@ -16,7 +16,7 @@ import Map from '../map/map';
 import NoFound from '../no-found/no-found';
 
 import { page } from '../../const';
-import { getRating } from '../../utils';
+import { getRating, getСhangesType } from '../../utils';
 
 function Property(): JSX.Element {
 
@@ -73,10 +73,10 @@ function Property(): JSX.Element {
             <div className="property__gallery-container container">
               <div className="property__gallery">
                 {offer.images.slice(0, 6).map((image: string, i: number) => (
-                  <div className="property__image-wrapper" key={image}>
+                  <div className="property__image-wrapper" key={`${image + i}`}>
                     <img className="property__image" src={image} alt="Studio"/>
                   </div>
-                ))};
+                ))}
               </div>
             </div>
             <div className="property__container container">
@@ -106,10 +106,10 @@ function Property(): JSX.Element {
                 </div>
                 <ul className="property__features">
                   <li className="property__feature property__feature--entire">
-                    {offer.type}
+                    {getСhangesType(offer.type)}
                   </li>
                   <li className="property__feature property__feature--bedrooms">
-                    {offer.bedrooms}
+                    {offer.bedrooms} Bedrooms
                   </li>
                   <li className="property__feature property__feature--adults">
                     Max {offer.maxAdults} adults
