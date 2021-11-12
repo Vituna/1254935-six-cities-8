@@ -54,7 +54,7 @@ function Sort(props: SortProps): JSX.Element {
         {PlacesSort.map((option, i) => (
           <li onClick={
             (evt) => handleClick(evt, option)
-          } className={`places__option ${typeSort === option && 'places__option--active'}` } tabIndex={0} key={`${option + i}`}
+          } className={`places__option ${typeSort === option ? 'places__option--active' : ''}` } tabIndex={0} key={`${option + i}`}
           >
             {option}
           </li>
