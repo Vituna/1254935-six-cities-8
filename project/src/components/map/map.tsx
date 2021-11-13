@@ -25,7 +25,7 @@ const currentCustomIcon = new leaflet.Icon({
   iconAnchor: [20, 39],
 });
 
-function MapSity(props: MapProps): JSX.Element {
+function MapCity(props: MapProps): JSX.Element {
 
   const {offers, focusedCard, zoomOnOffer = true, scrolling} = props;
 
@@ -99,4 +99,4 @@ function MapSity(props: MapProps): JSX.Element {
     </div>);
 }
 
-export default MapSity;
+export default MapCity;

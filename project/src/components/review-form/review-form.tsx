@@ -56,7 +56,6 @@ function ReviewForm(props: ReviewFormProps): JSX.Element {
         Your review
       </label>
       <div className="reviews__rating-form form__rating">
-
         {Ratings.map(({ title, value }) => (
           <Fragment key={value}>
             <input className="form__rating-input visually-hidden" name="rating" checked={value === rating} value={value} id={`${value}-stars`} type="radio" onChange={handleChangeRating} disabled={isReviewPosting} />
@@ -67,7 +66,6 @@ function ReviewForm(props: ReviewFormProps): JSX.Element {
             </label>
           </Fragment>
         ))}
-
       </div>
       <textarea className="reviews__textarea form__textarea" id="review" name="review" placeholder="Tell how was your stay, what you like and what can be improved" value={comment} maxLength={300} onChange={handleChangeText} disabled={isReviewPosting}/>
       <div className="reviews__button-wrapper">
@@ -78,11 +76,9 @@ function ReviewForm(props: ReviewFormProps): JSX.Element {
           Submit
         </button>
       </div>
-
       {isReviewNotPosted && (
         <p style={{color: 'red', textAlign: 'center'}}>Sending error. Please, try again.</p>
       )}
-
     </form>
   );
 }

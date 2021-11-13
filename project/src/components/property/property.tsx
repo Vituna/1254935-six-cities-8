@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useMemo } from 'react';
 import { fetchCurrentHotelAction, fetchReviewsAction, fetchNearHotelAction, sendFavoriteAction } from '../../store/api-actions';
-import { getCurrentHotel, getIsLoadCurrentHotelError, getNearHotel } from '../../store/offer-store/selectors';
+import { getCurrentHotel, getIsLoadCurrentHotelError, getNearHotels } from '../../store/offer-store/selectors';
 import { getReviews } from '../../store/reviews-store/selectors';
 import { getAuthorizationStatus } from '../../store/auth-store/selectors';
 import { updateCurrentOffer, updateNearbyOffers } from '../../store/action';
@@ -15,7 +15,7 @@ import ReviewList from '../review-list/review-list';
 import Map from '../map/map';
 import NoFound from '../no-found/no-found';
 
-import { page } from '../../const';
+import { Page } from '../../const';
 import { getRating, getСhangesType } from '../../utils';
 
 function Property(): JSX.Element {
@@ -26,7 +26,7 @@ function Property(): JSX.Element {
 
   const offer = useSelector(getCurrentHotel);
   const reviews = useSelector(getReviews);
-  const nearHotel = useSelector(getNearHotel);
+  const nearHotels = useSelector(getNearHotels);
   const authorizationStatus = useSelector(getAuthorizationStatus);
   const isLoadCurrentHotelError = useSelector(getIsLoadCurrentHotelError);
 
@@ -40,8 +40,8 @@ function Property(): JSX.Element {
     if (!offer) {
       return [];
     }
-    return [...nearHotel, offer];
-  }, [offer, nearHotel]);
+    return [...nearHotels, offer];
+  }, [offer, nearHotels]);
 
   const handleOfferFavoriteClick = () => {
     if (offer) {
@@ -154,23 +154,19 @@ function Property(): JSX.Element {
                     </p>
                   </div>
                 </div>
-
                 <ReviewList review={reviews} authorizationStatus={authorizationStatus} id={id}/>
-
               </div>
             </div>
             <section className="property__map map">
-
               <Map offers={offers} focusedCard={offer} zoomOnOffer={false} scrolling/>
-
             </section>
           </section>
           <div className="container">
             <section className="near-places places">
               <h2 className="near-places__title">Other places in the neighbourhood</h2>
               <div className="near-places__list places__list">
-                {nearHotel.map((near) => (
-                  <OfferCard offer={near} key={near.id} cardType={page.Near} onFavoriteClick={handleChangeFavorite} />
+                {nearHotels.map((near) => (
+                  <OfferCard offer={near} key={near.id} cardType={Page.Near} onFavoriteClick={handleChangeFavorite} />
                 ))}
               </div>
             </section>

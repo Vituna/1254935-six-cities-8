@@ -8,8 +8,8 @@ export const getCurrentHotel = (store: Stores): Offer | null =>
 export const getHotels = (store: Stores): Offer[] =>
   store[StoreNameSpace.offer].hotels;
 
-export const getNearHotel = (store: Stores): Offer[] =>
-  store[StoreNameSpace.offer].nearHotel;
+export const getNearHotels = (store: Stores): Offer[] =>
+  store[StoreNameSpace.offer].nearHotels;
 
 export const getIsOffersLoading = (store: Stores): boolean =>
   store[StoreNameSpace.offer].isOffersLoading;

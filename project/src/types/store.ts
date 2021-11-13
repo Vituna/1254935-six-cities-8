@@ -22,7 +22,7 @@ export type AuthStore = {
 export type OfferStore = {
   hotels: Offer[],
   currentHotel: Offer | null,
-  nearHotel: Offer[],
+  nearHotels: Offer[],
   isOffersLoading: boolean,
   isLoadCurrentHotelError: boolean,
 }

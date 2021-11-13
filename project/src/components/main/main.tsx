@@ -29,17 +29,12 @@ function Main(): JSX.Element {
 
   return(
     <div className="page page--gray page--main">
-
       <Header />
-
       <main className={`page__main ${noOffers ? 'page__main--index-empty' : 'page__main--index'}`}>
-
         <LocationsItem currentCity={currentCity} onCityChange={onCityChange} />
-
         {isOffersLoading ? (<Preloader />) : (
           <CardsList offers={cityOffers} currentCity={currentCity} noOffers={noOffers} onSortChange={onSortChange} />
         )}
-
       </main>
     </div>
   );

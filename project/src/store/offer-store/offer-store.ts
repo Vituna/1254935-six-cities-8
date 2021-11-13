@@ -4,7 +4,7 @@ import { OfferStore } from '../../types/store';
 const initialState: OfferStore = {
   currentHotel: null,
   hotels: [],
-  nearHotel: [],
+  nearHotels: [],
   isOffersLoading: false,
   isLoadCurrentHotelError: false,
 };
@@ -25,7 +25,7 @@ export const offerReducer = (state = initialState, action: Actions): OfferStore 
     case ActionType.LoadNearHotelComplete:
       return {
         ...state,
-        nearHotel: action.payload,
+        nearHotels: action.payload,
       };
     case ActionType.LoadOffersStart:
       return {
@@ -45,7 +45,7 @@ export const offerReducer = (state = initialState, action: Actions): OfferStore 
     case ActionType.UpdateNearbyOffers:
       return {
         ...state,
-        nearHotel: state.nearHotel.map((offer) => {
+        nearHotels: state.nearHotels.map((offer) => {
           if (offer.id !== action.payload.id) {
             return offer;
           }

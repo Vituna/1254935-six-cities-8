@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 
 import { Offer } from '../../types/offer';
 
-import { page } from '../../const';
-import { getRating } from '../../utils';
+import { Page } from '../../const';
+import { getRating, getСhangesType } from '../../utils';
 
 type OfferCardProps = {
   cardType: string;
@@ -17,15 +17,15 @@ function OfferCard(props: OfferCardProps): JSX.Element {
   const {cardType, offer, onListItemHover, onListItemLeave, onFavoriteClick} = props;
   const {id, type, title, price, rating, isFavorite, isPremium, previewImage} = offer;
 
-  const isFavoriteCardType: boolean = cardType === page.Favorites;
+  const isFavoriteCardType: boolean = cardType === Page.Favorites;
 
   const getСhangesClassName = (): string => {
     switch (cardType) {
-      case page.Offer:
+      case Page.Offer:
         return 'cities__place-card';
-      case page.Favorites:
+      case Page.Favorites:
         return 'favorites__card';
-      case page.Near:
+      case Page.Near:
         return 'near-places__card';
       default:
         return '';
@@ -80,7 +80,7 @@ function OfferCard(props: OfferCardProps): JSX.Element {
             {title}
           </Link>
         </h2>
-        <p className="place-card__type">{type}</p>
+        <p className="place-card__type">{getСhangesType(type)}</p>
       </div>
     </article>
   );

@@ -8,13 +8,9 @@ function Header(): JSX.Element {
       <div className="container">
         <div className="header__wrapper">
           <div className="header__left">
-
             <Logo />
-
           </div>
-
           <User />
-
         </div>
       </div>
     </header>

@@ -23,7 +23,7 @@ export const Cities = [
   'Dusseldorf',
 ];
 
-export enum page {
+export enum Page {
   Offer = 'offer',
   Favorites = 'favorites',
   Near = 'near',

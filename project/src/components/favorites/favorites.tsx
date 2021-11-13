@@ -11,7 +11,7 @@ import Header from '../header/header';
 import Logo from '../logo/logo';
 import OfferCard from '../offer-card/offer-card';
 
-import { APIRoute, page } from '../../const';
+import { APIRoute, Page } from '../../const';
 
 type GrouppedOffers = Record<string, Offer[]>
 
@@ -82,21 +82,18 @@ function Favorites(): JSX.Element {
                     </div>
                     <div className="favorites__places">
                       {cityOffers.map((offer: Offer) => (
-                        <OfferCard offer={offer} key={offer.id} cardType={page.Favorites} onFavoriteClick={handleFavoriteClick} />
+                        <OfferCard offer={offer} key={offer.id} cardType={Page.Favorites} onFavoriteClick={handleFavoriteClick} />
                       ))}
                     </div>
                   </li>
                 ))}
-
               </ul>
             </section>
           </div>
         </main>
       )}
       <footer className="footer container">
-
         <Logo />
-
       </footer>
     </div>
   );
