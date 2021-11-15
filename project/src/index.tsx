@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Router as BrowserRouter } from 'react-router-dom';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import {createAPI} from './components/services/api';
@@ -15,6 +16,7 @@ import {ThunkAppDispatch} from './types/action';
 import {AuthorizationStatus} from './const';
 import { rootReducer } from './store/root-reducer';
 import { redirect } from './store/middlewares/redirect';
+import browserHistory from './browser-history';
 
 
 const api = createAPI(
@@ -34,9 +36,12 @@ export const store = createStore(
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store} >
-      <ToastContainer />
-      <App />
+    <Provider store={store}>
+      <BrowserRouter history={browserHistory}>
+        <ToastContainer />
+        <App />
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>,
-  document.getElementById('root'));
+  document.getElementById('root'),
+);

@@ -1,4 +1,5 @@
 import { AuthorizationStatus, EMAIL_VALID_REGEX, PASSWORD_VALID_REGEX } from './const';
+import { AccommodationType } from './types/offer';
 
 export const formatDateValue = (date: string): string => new Date(date).toLocaleDateString('en-US', {month: 'long', year: 'numeric'});
 export const formatDateAttribute = (date: string): string => new Date(date).toLocaleDateString('en-CA');
@@ -19,13 +20,13 @@ export const isPasswordValid = (password: string): boolean => PASSWORD_VALID_REG
 
 export const getСhangesType = (type: string): string => {
   switch (type) {
-    case 'room':
+    case AccommodationType.Room:
       return 'Private Room';
-    case 'apartment':
+    case AccommodationType.Apartment:
       return 'Apartment';
-    case 'house':
+    case AccommodationType.House:
       return 'House';
-    case 'hotel':
+    case AccommodationType.Hotel:
       return 'Hotel';
 
     default:

@@ -1,11 +1,17 @@
 export const BACKEND_URL = 'https://8.react.pages.academy/six-cities';
 export const REQUEST_TIMEOUT = 5000;
 export const AUTH_FAIL_MESSAGE = 'Не забудьте авторизоваться';
+export const ERROR_FAIL_MESSAGE = 'Ошибка при загрузке';
 
 export enum HttpCode {
   Unauthorized = 401,
 }
 
+
+export const MAX_AMOUNT_IMAGES = 6;
+export const MIN_AMOUNT_IMAGES = 0;
+export const MAX_AMOUNT_REVIEWS = 10;
+export const MIN_AMOUNT_REVIEWS = 0;
 export const AUTH_TOKEN_KEY_NAME = 'six-cities-token';
 
 export enum AuthorizationStatus {
@@ -46,6 +52,8 @@ export enum APIRoute {
   Logout = '/logout',
   Reviews = '/comments',
   Favorite = '/favorite',
+  Favorites = '/favorites',
+
 }
 
 export const EMAIL_VALID_REGEX =/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

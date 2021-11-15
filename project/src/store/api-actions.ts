@@ -8,7 +8,7 @@ import {saveToken, dropToken, Token} from '../components/services/token';
 import {adaptAuthInfoToClient, adaptReviewToClient, offerAdapter} from '../adapter';
 import browserHistory from '../browser-history';
 
-import {APIRoute, AuthorizationStatus, AUTH_FAIL_MESSAGE, ReviewPostStatus} from '../const';
+import {APIRoute, AuthorizationStatus, AUTH_FAIL_MESSAGE, ERROR_FAIL_MESSAGE, ReviewPostStatus} from '../const';
 
 export const fetchHotelsAction = (): ThunkActionResult =>
   async (dispatch, _getState, api): Promise<void> => {
@@ -25,20 +25,26 @@ export const fetchCurrentHotelAction = (id: number): ThunkActionResult =>
         `${APIRoute.Hotels}/${id}`,
       );
       dispatch(loadCurrentHotel(offerAdapter(data)));
-    } catch {
+    }
+    catch {
       dispatch(loadCurrentHotelError());
     }
   };
 
 export const fetchNearHotelAction = (id: number): ThunkActionResult =>
   async (dispatch, _getStore, api): Promise<void> => {
-    const { data } = await api.get<OfferResponse[]>(
-      `${APIRoute.Hotels}/${id}/nearby`,
-    );
-    const normalizedNearbyOffers = data.map((offer) => (
-      offerAdapter(offer)
-    ));
-    dispatch(loadNearHotelComplete(normalizedNearbyOffers));
+    try {
+      const { data } = await api.get<OfferResponse[]>(
+        `${APIRoute.Hotels}/${id}/nearby`,
+      );
+      const normalizedNearbyOffers = data.map((offer) => (
+        offerAdapter(offer)
+      ));
+      dispatch(loadNearHotelComplete(normalizedNearbyOffers));
+    }
+    catch{
+      toast.info(ERROR_FAIL_MESSAGE);
+    }
   };
 
 export const checkAuthAction = (): ThunkActionResult =>
@@ -73,11 +79,16 @@ export const logoutAction = (): ThunkActionResult =>
 
 export const fetchReviewsAction = (id: number): ThunkActionResult =>
   async (dispatch, _getStore, api): Promise<void> => {
-    const { data } = await api.get<OfferReviewResponse[]>(`${APIRoute.Reviews}/${id}`);
-    const normalizedReviews = data.map((review: OfferReviewResponse) => (
-      adaptReviewToClient(review)
-    ));
-    dispatch(loadReviews(normalizedReviews));
+    try {
+      const { data } = await api.get<OfferReviewResponse[]>(`${APIRoute.Reviews}/${id}`);
+      const normalizedReviews = data.map((review: OfferReviewResponse) => (
+        adaptReviewToClient(review)
+      ));
+      dispatch(loadReviews(normalizedReviews));
+    }
+    catch {
+      toast.info(ERROR_FAIL_MESSAGE);
+    }
   };
 
 export const sendReviewAction = ({ comment, rating } : NewReview, id: number): ThunkActionResult =>
@@ -101,12 +112,16 @@ export const sendReviewAction = ({ comment, rating } : NewReview, id: number): T
 
 export const loadFavoriteAction = (): ThunkActionResult =>
   async function (dispatch, _getState, api): Promise<void> {
-    const { data } = await api.get<OfferResponse[]>(APIRoute.Favorite);
-    const adaptedData = data.map((hotel) => offerAdapter(hotel));
+    try {
+      const { data } = await api.get<OfferResponse[]>(APIRoute.Favorite);
+      const adaptedData = data.map((hotel) => offerAdapter(hotel));
 
-    dispatch(setFavoriteHotelsAction(adaptedData));
+      dispatch(setFavoriteHotelsAction(adaptedData));
+    }
+    catch {
+      toast.info(ERROR_FAIL_MESSAGE);
+    }
   };
-
 
 export const sendFavoriteAction = (hotel: Offer, onComplete?: (updatedOffer: Offer) => void): ThunkActionResult =>
   async function (dispatch, _getState, api): Promise<void> {

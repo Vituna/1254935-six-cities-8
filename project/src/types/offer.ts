@@ -147,3 +147,10 @@ export enum City {
   Hamburg = 'Hamburg',
   Dusseldorf = 'Dusseldorf',
 }
+
+export enum AccommodationType {
+  Room = 'room',
+  Apartment = 'apartment',
+  House = 'house',
+  Hotel = 'hotel',
+}

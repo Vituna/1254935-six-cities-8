@@ -1,7 +1,7 @@
 import {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import {AxiosInstance} from 'axios';
 
-import {Store} from '../types/store';
+import {Stores} from '../types/store';
 
 import {Offer, OfferReview, UserInfo} from './offer';
 
@@ -141,6 +141,6 @@ export type Actions = ChangeCurrentCityAction | ChangeOffersAction | ChangePlace
 LoadOffersAction | LoadOffersStart | ChangeCurrentEmailAction | LoadReviewsAction | LoadCurrentHotelAction | LoadCurrentHotelErrorAction | LoadNearHotelCompleteAction |
 SendReview | SendReviewStatusAction | SetFavoriteHotelsAction | UpdateHotelAction | RedirectToRouteAction | UpdateCurrentOfferAction | UpdateFavoriteOffersAction | UpdateNearbyOffersAction;
 
-export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, Store, AxiosInstance, Actions>;
+export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, Stores, AxiosInstance, Actions>;
 
-export type ThunkAppDispatch = ThunkDispatch<Store, AxiosInstance, Actions>;
+export type ThunkAppDispatch = ThunkDispatch<Stores, AxiosInstance, Actions>;

@@ -25,6 +25,7 @@ function Preloader(): JSX.Element {
             values="0 50 51;360 50 51"
           />
         </path>
+        <h1>Loading</h1>
       </svg>
     </div>
   );

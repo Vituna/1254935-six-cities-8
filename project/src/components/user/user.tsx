@@ -24,7 +24,7 @@ function User(): JSX.Element {
         {AuthorizationStatus.Auth === authorizationStatus ? (
           <>
             <li className="header__nav-item user">
-              <Link className="header__nav-link header__nav-link--profile" to={APIRoute.Favorite}>
+              <Link className="header__nav-link header__nav-link--profile" to={APIRoute.Favorites}>
                 <div className="header__avatar-wrapper user__avatar-wrapper">
                 </div>
                 <span className="header__user-name user__name">{currentEmail || authInfo.email}</span>

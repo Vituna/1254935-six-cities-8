@@ -5,7 +5,7 @@ import { OfferReview } from '../../types/offer';
 import ReviewForm from '../review-form/review-form';
 import ReviewItem from '../review-item/review-item';
 
-import { AuthorizationStatus } from '../../const';
+import { AuthorizationStatus, MAX_AMOUNT_REVIEWS, MIN_AMOUNT_REVIEWS } from '../../const';
 
 type ReviewListProps = {
   review: OfferReview[];
@@ -19,7 +19,7 @@ function ReviewList(props: ReviewListProps): JSX.Element {
   const reviewsToDisplay = useMemo(() =>
     [...review]
       .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
-      .slice(0, 10),
+      .slice(MIN_AMOUNT_REVIEWS, MAX_AMOUNT_REVIEWS),
   [review]);
 
   return (

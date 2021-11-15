@@ -52,9 +52,7 @@ function OfferCard(props: OfferCardProps): JSX.Element {
     <article className={`place-card ${getСhangesClassName()}`} onMouseEnter={handleHoverCard} onMouseLeave={handleLeaveCard}>
       {isPremium && <div className="place-card__mark"><span>Premium</span></div>}
       <div className={isFavoriteCardType ? 'favorites__image-wrapper place-card__image-wrapper' : 'cities__image-wrapper place-card__image-wrapper'}>
-        <a href="/">
-          <img className="place-card__image" src={previewImage} width="260" height="200" alt="" />
-        </a>
+        <img className="place-card__image" src={previewImage} width="260" height="200" alt="" />
       </div>
       <div className="place-card__info">
         <div className="place-card__price-wrapper">

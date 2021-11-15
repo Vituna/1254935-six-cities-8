@@ -15,7 +15,7 @@ import ReviewList from '../review-list/review-list';
 import Map from '../map/map';
 import NoFound from '../no-found/no-found';
 
-import { Page } from '../../const';
+import { MAX_AMOUNT_IMAGES, MIN_AMOUNT_IMAGES, Page } from '../../const';
 import { getRating, getСhangesType } from '../../utils';
 
 function Property(): JSX.Element {
@@ -72,7 +72,7 @@ function Property(): JSX.Element {
           <section className="property">
             <div className="property__gallery-container container">
               <div className="property__gallery">
-                {offer.images.slice(0, 6).map((image: string, i: number) => (
+                {offer.images.slice(MIN_AMOUNT_IMAGES, MAX_AMOUNT_IMAGES).map((image: string, i: number) => (
                   <div className="property__image-wrapper" key={`${image + i}`}>
                     <img className="property__image" src={image} alt="Studio"/>
                   </div>
